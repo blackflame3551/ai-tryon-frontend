@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fitting Room — AI Virtual Try-On</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0D0C0F;
+    --panel:#17151A;
+    --panel-2:#1D1B21;
+    --border:#2A272E;
+    --text:#F2EFE9;
+    --dim:#9A968D;
+    --gold:#C6A664;
+    --gold-dim:#8B7A52;
+    --rust:#A85C48;
+    --success:#6E9C7D;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',-apple-system,sans-serif;
+    min-height:100vh;
+  }
+  a{color:inherit;}
+
+  /* ---------- Top bar ---------- */
+  header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:22px 32px;border-bottom:1px solid var(--border);
+  }
+  .wordmark{
+    font-family:'Fraunces',serif;font-size:20px;letter-spacing:0.02em;
+  }
+  .wordmark span{color:var(--gold);font-style:italic;}
+  .tag{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.12em;
+    color:var(--dim);text-transform:uppercase;border:1px solid var(--border);
+    padding:6px 10px;border-radius:99px;
+  }
+
+  /* ---------- Layout ---------- */
+  main{
+    display:grid;
+    grid-template-columns:300px 1fr;
+    gap:0;
+    min-height:calc(100vh - 73px);
+  }
+  @media (max-width:860px){
+    main{grid-template-columns:1fr;}
+  }
+
+  /* ---------- Catalog rail ---------- */
+  .catalog{
+    border-right:1px solid var(--border);
+    padding:24px 20px;
+    display:flex;flex-direction:column;gap:14px;
+  }
+  @media (max-width:860px){
+    .catalog{
+      border-right:none;border-bottom:1px solid var(--border);
+      flex-direction:row;overflow-x:auto;padding:18px 16px;
+    }
+  }
+  .catalog-title{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;
+    color:var(--dim);text-transform:uppercase;margin-bottom:4px;
+  }
+  .look-card{
+    background:var(--panel);border:1px solid var(--border);border-radius:10px;
+    padding:10px;cursor:pointer;text-align:left;
+    display:flex;gap:12px;align-items:center;
+    transition:border-color .15s ease, transform .15s ease;
+    min-width:220px;flex-shrink:0;
+  }
+  .look-card:hover{border-color:var(--gold-dim);}
+  .look-card.active{border-color:var(--gold);background:var(--panel-2);}
+  .look-card img{
+    width:46px;height:46px;object-fit:cover;border-radius:6px;
+    background:#0000;flex-shrink:0;
+  }
+  .look-meta{overflow:hidden;}
+  .look-eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gold-dim);
+    letter-spacing:0.1em;
+  }
+  .look-name{
+    font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .look-price{font-size:12px;color:var(--dim);}
+
+  .add-look{
+    border:1px dashed var(--border);border-radius:10px;padding:14px;
+    display:flex;flex-direction:column;gap:8px;min-width:220px;flex-shrink:0;
+  }
+  .add-look-title{font-size:12px;color:var(--dim);font-family:'IBM Plex Mono',monospace;letter-spacing:.08em;}
+  .add-look input{
+    background:var(--bg);border:1px solid var(--border);color:var(--text);
+    border-radius:6px;padding:8px 10px;font-size:12px;font-family:'Inter';width:100%;
+  }
+  .add-look input:focus{outline:2px solid var(--gold);outline-offset:1px;}
+  .add-look .row{display:flex;gap:6px;}
+  .add-look .row input{flex:1;min-width:0;}
+  .btn-mini{
+    background:transparent;border:1px solid var(--gold-dim);color:var(--gold);
+    border-radius:6px;padding:8px;font-size:11px;font-family:'IBM Plex Mono',monospace;
+    letter-spacing:.06em;cursor:pointer;text-transform:uppercase;
+  }
+  .btn-mini:hover{background:rgba(198,166,100,.08);}
+
+  /* ---------- Fitting room ---------- */
+  .room{
+    padding:40px 48px;
+    display:flex;flex-direction:column;align-items:center;
+    gap:28px;
+  }
+  @media (max-width:860px){ .room{padding:28px 18px;} }
+
+  .room-header{max-width:640px;text-align:center;}
+  .room-header h1{
+    font-family:'Fraunces',serif;font-weight:500;font-style:italic;
+    font-size:clamp(26px,4vw,38px);margin:0 0 8px;line-height:1.15;
+  }
+  .room-header p{color:var(--dim);font-size:14px;margin:0;}
+
+  .mirror-wrap{
+    position:relative;width:100%;max-width:420px;
+  }
+  .mirror-tag{
+    position:absolute;left:-34px;top:50%;transform:translateY(-50%) rotate(-90deg);
+    font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.18em;
+    color:var(--gold-dim);text-transform:uppercase;white-space:nowrap;
+  }
+  @media (max-width:520px){ .mirror-tag{display:none;} }
+
+  .mirror{
+    position:relative;
+    border:1px solid var(--gold-dim);
+    border-radius:14px;
+    padding:10px;
+    background:var(--panel);
+    overflow:hidden;
+  }
+  .mirror::before,.mirror::after{
+    content:"";position:absolute;width:16px;height:16px;
+    border:1px solid var(--gold);opacity:.6;
+  }
+  .mirror::before{top:6px;left:6px;border-right:none;border-bottom:none;}
+  .mirror::after{bottom:6px;right:6px;border-left:none;border-top:none;}
+  .mirror-frame{
+    position:relative;border-radius:8px;overflow:hidden;background:#000;
+    aspect-ratio:3/4;
+  }
+  .mirror-frame img{
+    width:100%;height:100%;object-fit:cover;display:block;
+    transition:opacity .3s ease;
+  }
+  .scan-line{
+    position:absolute;left:0;right:0;top:0;height:2px;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);
+    opacity:0;pointer-events:none;
+  }
+  .mirror-frame.scanning .scan-line{
+    opacity:1;animation:scan 1.8s linear infinite;
+  }
+  @keyframes scan{
+    0%{top:0%;}
+    100%{top:100%;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .mirror-frame.scanning .scan-line{animation:none;opacity:.5;top:50%;}
+  }
+
+  .mirror-caption{
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding:12px 6px 4px;
+  }
+  .mirror-caption .name{font-size:14px;font-weight:500;}
+  .mirror-caption .price{font-size:13px;color:var(--gold);font-family:'IBM Plex Mono',monospace;}
+
+  /* ---------- Controls ---------- */
+  .controls{width:100%;max-width:420px;display:flex;flex-direction:column;gap:12px;}
+
+  .upload-tabs{display:flex;gap:6px;}
+  .upload-tab{
+    flex:1;padding:9px;text-align:center;font-size:12px;font-family:'IBM Plex Mono',monospace;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--dim);
+    border:1px solid var(--border);border-radius:8px;cursor:pointer;background:transparent;
+  }
+  .upload-tab.active{border-color:var(--gold);color:var(--gold);}
+
+  .upload-pane{display:none;}
+  .upload-pane.active{display:block;}
+
+  .dropzone{
+    border:1px dashed var(--border);border-radius:10px;padding:20px;
+    text-align:center;cursor:pointer;font-size:13px;color:var(--dim);
+    transition:border-color .15s ease;
+  }
+  .dropzone:hover,.dropzone.drag{border-color:var(--gold);color:var(--text);}
+  .dropzone input{display:none;}
+  .preview-thumb{
+    margin-top:10px;width:100%;max-height:160px;object-fit:cover;
+    border-radius:8px;display:none;
+  }
+
+  .controls input[type=text]{
+    width:100%;background:var(--panel);border:1px solid var(--border);color:var(--text);
+    border-radius:8px;padding:11px 12px;font-size:13px;font-family:'Inter';
+  }
+  .controls input[type=text]:focus{outline:2px solid var(--gold);outline-offset:1px;}
+
+  .btn-primary{
+    width:100%;background:var(--gold);color:#161116;border:none;
+    padding:14px;border-radius:99px;font-weight:600;font-size:14px;
+    cursor:pointer;letter-spacing:.01em;transition:background .15s ease, transform .1s ease;
+  }
+  .btn-primary:hover{background:#D6B678;}
+  .btn-primary:active{transform:scale(.99);}
+  .btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+
+  .status{
+    font-size:12.5px;font-family:'IBM Plex Mono',monospace;letter-spacing:.02em;
+    padding:10px 12px;border-radius:8px;border:1px solid var(--border);
+    display:none;text-align:center;
+  }
+  .status.show{display:block;}
+  .status.ok{border-color:var(--success);color:var(--success);}
+  .status.err{border-color:var(--rust);color:var(--rust);}
+  .status.pending{border-color:var(--gold-dim);color:var(--gold);}
+
+  .footnote{font-size:11px;color:var(--dim);text-align:center;max-width:420px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wordmark">the empire <span>fitting room</span></div>
+  <div class="tag">Live AI Demo</div>
+</header>
+
+<main>
+  <!-- ===== Catalog rail ===== -->
+  <aside class="catalog" id="catalog">
+    <div class="catalog-title">Lookbook</div>
+    <!-- look cards injected by JS -->
+    <div class="add-look">
+      <div class="add-look-title">+ Add a product</div>
+      <input id="new-look-name" type="text" placeholder="Product name">
+      <div class="row">
+        <input id="new-look-price" type="text" placeholder="Price">
+        <input id="new-look-url" type="text" placeholder="Image URL">
+      </div>
+      <label class="btn-mini" style="text-align:center;">
+        Upload image instead
+        <input id="new-look-file" type="file" accept="image/png,image/jpeg,image/webp" style="display:none;">
+      </label>
+      <button class="btn-mini" id="add-look-btn">Add to lookbook</button>
+    </div>
+  </aside>
+
+  <!-- ===== Fitting room ===== -->
+  <section class="room">
+    <div class="room-header">
+      <h1>See it on you, before you buy it.</h1>
+      <p>Pick a look, add a photo, and the fitting room does the rest.</p>
+    </div>
+
+    <div class="mirror-wrap">
+      <div class="mirror-tag">AI Fitting Room · Live</div>
+      <div class="mirror">
+        <div class="mirror-frame" id="mirror-frame">
+          <div class="scan-line"></div>
+          <img id="result-img" src="" alt="Selected look">
+        </div>
+      </div>
+      <div class="mirror-caption">
+        <span class="name" id="active-name">—</span>
+        <span class="price" id="active-price"></span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="upload-tabs">
+        <button class="upload-tab active" data-tab="file">Upload photo</button>
+        <button class="upload-tab" data-tab="url">Paste URL</button>
+      </div>
+
+      <div class="upload-pane active" id="pane-file">
+        <label class="dropzone" id="dropzone">
+          <div>📷 Drop a photo here, or click to choose</div>
+          <input id="user-photo-file" type="file" accept="image/png,image/jpeg,image/webp">
+          <img class="preview-thumb" id="user-photo-preview" alt="">
+        </label>
+      </div>
+
+      <div class="upload-pane" id="pane-url">
+        <input id="user-photo-url" type="text" placeholder="https://example.com/your-photo.jpg">
+      </div>
+
+      <button class="btn-primary" id="tryon-btn">Try it on</button>
+      <div class="status" id="status"></div>
+    </div>
+
+    <p class="footnote">Photos are processed for this demo only and used to generate a preview image.</p>
+  </section>
+</main>
+
+<script>
+/* ============ CONFIG — edit before deploying ============ */
+const BACKEND_API_BASE = "https://ai-tryon-backend-production.up.railway.app";
+const MERCHANT_KEY = "mch_live_test_789";
+/* ========================================================== */
+
+// Starter lookbook — replace image URLs with a client's real product photos for a live demo,
+// or use "+ Add a product" in the UI to load them without touching code.
+let looks = [
+  { id: "look-1", name: "Premium Streetwear Hoodie", price: "$79.00", image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=600" },
+  { id: "look-2", name: "Tailored Wool Coat", price: "$228.00", image: "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=600" },
+  { id: "look-3", name: "Silk Slip Dress", price: "$142.00", image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600" },
+];
+
+let activeLookIndex = 0;
+
+const catalogEl = document.getElementById('catalog');
+const resultImg = document.getElementById('result-img');
+const mirrorFrame = document.getElementById('mirror-frame');
+const activeNameEl = document.getElementById('active-name');
+const activePriceEl = document.getElementById('active-price');
+const statusEl = document.getElementById('status');
+const tryonBtn = document.getElementById('tryon-btn');
+
+function renderCatalog() {
+  // Clear existing look-card elements (keep the add-look form, which is last child)
+  [...catalogEl.querySelectorAll('.look-card')].forEach(el => el.remove());
+  const addForm = catalogEl.querySelector('.add-look');
+
+  looks.forEach((look, i) => {
+    const card = document.createElement('button');
+    card.className = 'look-card' + (i === activeLookIndex ? ' active' : '');
+    card.setAttribute('aria-pressed', i === activeLookIndex);
+    card.innerHTML = `
+      <img src="${look.image}" alt="">
+      <div class="look-meta">
+        <div class="look-eyebrow">LOOK ${String(i + 1).padStart(2, '0')}</div>
+        <div class="look-name">${look.name}</div>
+        <div class="look-price">${look.price}</div>
+      </div>`;
+    card.onclick = () => selectLook(i);
+    catalogEl.insertBefore(card, addForm);
+  });
+}
+
+function selectLook(i) {
+  activeLookIndex = i;
+  const look = looks[i];
+  resultImg.src = look.image;
+  activeNameEl.textContent = look.name;
+  activePriceEl.textContent = look.price;
+  resetStatus();
+  renderCatalog();
+}
+
+function resetStatus() {
+  statusEl.className = 'status';
+  statusEl.textContent = '';
+}
+
+function setStatus(text, kind) {
+  statusEl.className = 'status show' + (kind ? ' ' + kind : '');
+  statusEl.textContent = text;
+}
+
+/* ---------- Add-product form (supports URL or upload, same as person photo) ---------- */
+document.getElementById('add-look-btn').onclick = async () => {
+  const name = document.getElementById('new-look-name').value.trim();
+  const price = document.getElementById('new-look-price').value.trim();
+  const urlInput = document.getElementById('new-look-url').value.trim();
+  const fileInput = document.getElementById('new-look-file');
+
+  if (!name) { alert('Give the product a name first.'); return; }
+
+  let imageUrl = urlInput;
+  try {
+    if (!imageUrl && fileInput.files[0]) {
+      imageUrl = await uploadImage(fileInput.files[0]);
+    }
+    if (!imageUrl) { alert('Paste an image URL or upload a photo of the product.'); return; }
+
+    looks.push({ id: 'look-' + Date.now(), name, price: price || '', image: imageUrl });
+    selectLook(looks.length - 1);
+
+    document.getElementById('new-look-name').value = '';
+    document.getElementById('new-look-price').value = '';
+    document.getElementById('new-look-url').value = '';
+    fileInput.value = '';
+  } catch (e) {
+    alert('Could not add that product: ' + e.message);
+  }
+};
+
+/* ---------- Shared image upload (used for both product photos and user photos) ---------- */
+async function uploadImage(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await fetch(`${BACKEND_API_BASE}/api/v1/tryon/upload-photo`, {
+    method: 'POST',
+    headers: { 'X-Merchant-API-Key': MERCHANT_KEY },
+    body: formData
+  });
+  if (!res.ok) throw new Error('Upload failed');
+  const data = await res.json();
+  return data.imageUrl;
+}
+
+/* ---------- Upload tabs (file vs URL) for the person photo ---------- */
+document.querySelectorAll('.upload-tab').forEach(tab => {
+  tab.onclick = () => {
+    document.querySelectorAll('.upload-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.upload-pane').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('pane-' + tab.dataset.tab).classList.add('active');
+  };
+});
+
+/* ---------- Person photo dropzone ---------- */
+const dropzone = document.getElementById('dropzone');
+const userPhotoFile = document.getElementById('user-photo-file');
+const userPhotoPreview = document.getElementById('user-photo-preview');
+
+['dragover', 'dragenter'].forEach(evt =>
+  dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add('drag'); })
+);
+['dragleave', 'drop'].forEach(evt =>
+  dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.remove('drag'); })
+);
+dropzone.addEventListener('drop', e => {
+  if (e.dataTransfer.files[0]) {
+    userPhotoFile.files = e.dataTransfer.files;
+    userPhotoFile.dispatchEvent(new Event('change'));
+  }
+});
+userPhotoFile.addEventListener('change', () => {
+  const file = userPhotoFile.files[0];
+  if (file) {
+    userPhotoPreview.src = URL.createObjectURL(file);
+    userPhotoPreview.style.display = 'block';
+    document.getElementById('user-photo-url').value = '';
+  }
+});
+
+async function resolveUserPhotoUrl() {
+  const activeTab = document.querySelector('.upload-tab.active').dataset.tab;
+  if (activeTab === 'file') {
+    if (!userPhotoFile.files[0]) throw new Error('Choose a photo first.');
+    return await uploadImage(userPhotoFile.files[0]);
+  } else {
+    const url = document.getElementById('user-photo-url').value.trim();
+    if (!url) throw new Error('Paste a photo URL first.');
+    return url;
+  }
+}
+
+/* ---------- Try-on flow ---------- */
+tryonBtn.onclick = async () => {
+  const look = looks[activeLookIndex];
+  tryonBtn.disabled = true;
+  resetStatus();
+  setStatus('Uploading your photo…', 'pending');
+
+  try {
+    const userImageUrl = await resolveUserPhotoUrl();
+
+    setStatus('Opening a session…', 'pending');
+    const initRes = await fetch(`${BACKEND_API_BASE}/api/v1/tryon/init`, {
+      method: 'POST',
+      headers: { 'X-Merchant-API-Key': MERCHANT_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ garmentId: look.id })
+    });
+    if (!initRes.ok) throw new Error('Could not start a session.');
+    const { sessionId } = await initRes.json();
+
+    setStatus('Sending it to the fitting room…', 'pending');
+    const processRes = await fetch(`${BACKEND_API_BASE}/api/v1/tryon/process`, {
+      method: 'POST',
+      headers: { 'X-Merchant-API-Key': MERCHANT_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId, garmentImageUrl: look.image, userImageUrl })
+    });
+    if (!processRes.ok) throw new Error('Could not queue the job.');
+
+    mirrorFrame.classList.add('scanning');
+    setStatus('Generating your look…', 'pending');
+    pollStatus(sessionId);
+
+  } catch (err) {
+    setStatus(err.message, 'err');
+    tryonBtn.disabled = false;
+  }
+};
+
+function pollStatus(sessionId) {
+  const interval = setInterval(async () => {
+    try {
+      const res = await fetch(`${BACKEND_API_BASE}/api/v1/tryon/status/${sessionId}`, {
+        headers: { 'X-Merchant-API-Key': MERCHANT_KEY }
+      });
+      const data = await res.json();
+
+      if (data.status === 'completed') {
+        clearInterval(interval);
+        mirrorFrame.classList.remove('scanning');
+        resultImg.src = data.resultImageUrl;
+        setStatus('Done — here\'s the look.', 'ok');
+        tryonBtn.disabled = false;
+      } else if (data.status === 'failed') {
+        clearInterval(interval);
+        mirrorFrame.classList.remove('scanning');
+        setStatus('Failed: ' + (data.errorReason || 'unknown error'), 'err');
+        tryonBtn.disabled = false;
+      } else {
+        setStatus('Status: ' + data.status + '…', 'pending');
+      }
+    } catch (e) {
+      // transient network hiccup during polling — keep trying silently
+    }
+  }, 3000);
+}
+
+/* ---------- Init ---------- */
+renderCatalog();
+selectLook(0);
+</script>
+</body>
+</html>
