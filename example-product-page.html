@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Example store product page — widget demo</title>
+<style>
+  body { font-family: -apple-system, sans-serif; background: #f4f2ee; margin: 0; padding: 40px; }
+  .product { max-width: 420px; margin: 0 auto; background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,.06); }
+  .product img { width: 100%; border-radius: 8px; margin-bottom: 16px; }
+  .product h1 { font-size: 20px; margin: 0 0 4px; }
+  .product .price { color: #666; margin: 0 0 20px; }
+  .note { max-width: 420px; margin: 20px auto 0; font-size: 12px; color: #888; text-align: center; }
+</style>
+</head>
+<body>
+
+  <!-- This block simulates a normal ecom product page with its own CSS —
+       the widget below is unaffected by (and doesn't affect) this page's styles,
+       because it renders inside a Shadow DOM. -->
+  <div class="product">
+    <img src="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=600" alt="Premium Streetwear Hoodie">
+    <h1>Premium Streetwear Hoodie</h1>
+    <p class="price">$79.00 USD</p>
+
+    <!-- ===== The widget — this is the part you copy into a real store ===== -->
+    <div class="ai-tryon-widget"
+         data-backend="https://ai-tryon-backend-production.up.railway.app"
+         data-merchant-key="mch_live_test_789"
+         data-product-id="prod_hoodie_001"
+         data-product-name="Premium Streetwear Hoodie"
+         data-product-price="$79.00"
+         data-product-image="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=600">
+    </div>
+    <script src="./widget.js" defer></script>
+    <!-- ===================================================================== -->
+
+  </div>
+
+  <p class="note">This page simulates any ecom store's product page. The "✨ Try It On" button above is the embeddable widget — same one you'd drop into a real Shopify/WooCommerce/custom store product template.</p>
+
+</body>
+</html>
