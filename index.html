@@ -44,6 +44,9 @@
   }
   @media (max-width:480px){ .wordmark{font-size:17px;} }
   .wordmark span{color:var(--gold);font-style:italic;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .logo{width:32px;height:32px;border-radius:8px;object-fit:cover;flex-shrink:0;}
+  @media (max-width:480px){ .logo{width:26px;height:26px;} }
   .tag{
     font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.12em;
     color:var(--dim);text-transform:uppercase;border:1px solid var(--border);
@@ -263,7 +266,10 @@
 <body>
 
 <header>
-  <div class="wordmark">the empire <span>fitting room</span></div>
+  <div class="brand">
+    <img src="logo.png" alt="Empire Growth" class="logo">
+    <div class="wordmark">the empire <span>fitting room</span></div>
+  </div>
   <div class="tag">Live AI Demo</div>
 </header>
 
