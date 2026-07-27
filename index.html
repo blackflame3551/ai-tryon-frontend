@@ -337,7 +337,8 @@
 /* ============ CONFIG — edit before deploying ============ */
 const BACKEND_API_BASE = "https://ai-tryon-backend-production.up.railway.app"; // your Railway backend URL
 const MERCHANT_KEY = "mch_live_test_789"; // your merchant API key
-const ADMIN_KEY = "empire2026"; // change this — required to add a product to the lookbook
+const ADD_CODE = "empire2026"; // change this — required to add a product to the lookbook
+const REMOVE_CODE = "empireremove2026"; // change this — required to remove a product, different from ADD_CODE
 /* ========================================================== */
 
 // Starter looks — used only once, to seed the backend the very first time
@@ -415,6 +416,11 @@ function renderCatalog() {
 
 async function removeLook(i) {
   if (looks.length <= 1) { alert('Keep at least one look in the lookbook.'); return; }
+
+  const code = prompt('Enter the code to remove this product:');
+  if (code === null) return; // cancelled
+  if (code !== REMOVE_CODE) { alert('Incorrect code.'); return; }
+
   const look = looks[i];
   try {
     await deleteLookOnBackend(look.id);
@@ -461,7 +467,7 @@ document.getElementById('new-look-file').addEventListener('change', () => {
 document.getElementById('add-look-btn').onclick = async () => {
   const code = prompt('Enter the code to add a product:');
   if (code === null) return; // cancelled
-  if (code !== ADMIN_KEY) { alert('Incorrect code.'); return; }
+  if (code !== ADD_CODE) { alert('Incorrect code.'); return; }
 
   const name = document.getElementById('new-look-name').value.trim();
   const price = document.getElementById('new-look-price').value.trim();
