@@ -34,15 +34,20 @@
   header{
     display:flex;align-items:center;justify-content:space-between;
     padding:22px 32px;border-bottom:1px solid var(--border);
+    gap:12px;flex-wrap:wrap;
+  }
+  @media (max-width:480px){
+    header{padding:16px 18px;}
   }
   .wordmark{
     font-family:'Fraunces',serif;font-size:20px;letter-spacing:0.02em;
   }
+  @media (max-width:480px){ .wordmark{font-size:17px;} }
   .wordmark span{color:var(--gold);font-style:italic;}
   .tag{
     font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.12em;
     color:var(--dim);text-transform:uppercase;border:1px solid var(--border);
-    padding:6px 10px;border-radius:99px;
+    padding:6px 10px;border-radius:99px;white-space:nowrap;
   }
 
   /* ---------- Layout ---------- */
@@ -66,7 +71,13 @@
     .catalog{
       border-right:none;border-bottom:1px solid var(--border);
       flex-direction:row;overflow-x:auto;padding:18px 16px;
+      -webkit-overflow-scrolling:touch;
     }
+  }
+  @media (max-width:480px){
+    .catalog{padding:14px 12px;gap:10px;}
+    .look-card{min-width:180px;padding:8px;}
+    .add-look{min-width:180px;padding:12px;}
   }
   .catalog-title{
     font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;
@@ -110,7 +121,7 @@
   .add-look-title{font-size:12px;color:var(--dim);font-family:'IBM Plex Mono',monospace;letter-spacing:.08em;}
   .add-look input{
     background:var(--bg);border:1px solid var(--border);color:var(--text);
-    border-radius:6px;padding:8px 10px;font-size:12px;font-family:'Inter';width:100%;
+    border-radius:6px;padding:10px;font-size:16px;font-family:'Inter';width:100%;
   }
   .add-look input:focus{outline:2px solid var(--gold);outline-offset:1px;}
   .add-look .row{display:flex;gap:6px;}
@@ -130,6 +141,7 @@
     gap:28px;
   }
   @media (max-width:860px){ .room{padding:28px 18px;} }
+  @media (max-width:480px){ .room{padding:20px 14px;gap:22px;} }
 
   .room-header{max-width:640px;text-align:center;}
   .room-header h1{
@@ -198,9 +210,10 @@
 
   .upload-tabs{display:flex;gap:6px;}
   .upload-tab{
-    flex:1;padding:9px;text-align:center;font-size:12px;font-family:'IBM Plex Mono',monospace;
+    flex:1;padding:12px 9px;text-align:center;font-size:12px;font-family:'IBM Plex Mono',monospace;
     letter-spacing:.06em;text-transform:uppercase;color:var(--dim);
     border:1px solid var(--border);border-radius:8px;cursor:pointer;background:transparent;
+    min-height:44px;
   }
   .upload-tab.active{border-color:var(--gold);color:var(--gold);}
 
@@ -221,7 +234,7 @@
 
   .controls input[type=text]{
     width:100%;background:var(--panel);border:1px solid var(--border);color:var(--text);
-    border-radius:8px;padding:11px 12px;font-size:13px;font-family:'Inter';
+    border-radius:8px;padding:12px;font-size:16px;font-family:'Inter';
   }
   .controls input[type=text]:focus{outline:2px solid var(--gold);outline-offset:1px;}
 
@@ -324,7 +337,16 @@
 /* ============ CONFIG — edit before deploying ============ */
 const BACKEND_API_BASE = "https://ai-tryon-backend-production.up.railway.app"; // your Railway backend URL
 const MERCHANT_KEY = "mch_live_test_789"; // your merchant API key
+const ADMIN_KEY = "empire2026"; // change this — only visitors with ?admin=THIS_VALUE in the URL see "+ Add a product"
 /* ========================================================== */
+
+// Only you (with the right ?admin= link) can see/use the add-product panel.
+// Note: this hides the UI for regular visitors but isn't real server-side security —
+// fine for a public demo page, not for anything that needs to be tamper-proof.
+const isAdmin = new URLSearchParams(location.search).get('admin') === ADMIN_KEY;
+if (!isAdmin) {
+  document.querySelector('.add-look').style.display = 'none';
+}
 
 // Starter lookbook — replace image URLs with a client's real product photos for a live demo,
 // or use "+ Add a product" in the UI to load them without touching code.
