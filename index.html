@@ -337,16 +337,8 @@
 /* ============ CONFIG — edit before deploying ============ */
 const BACKEND_API_BASE = "https://ai-tryon-backend-production.up.railway.app"; // your Railway backend URL
 const MERCHANT_KEY = "mch_live_test_789"; // your merchant API key
-const ADMIN_KEY = "empire2026"; // change this — only visitors with ?admin=THIS_VALUE in the URL see "+ Add a product"
+const ADMIN_KEY = "empire2026"; // change this — required to add a product to the lookbook
 /* ========================================================== */
-
-// Only you (with the right ?admin= link) can see/use the add-product panel.
-// Note: this hides the UI for regular visitors but isn't real server-side security —
-// fine for a public demo page, not for anything that needs to be tamper-proof.
-const isAdmin = new URLSearchParams(location.search).get('admin') === ADMIN_KEY;
-if (!isAdmin) {
-  document.querySelector('.add-look').style.display = 'none';
-}
 
 // Starter lookbook — replace image URLs with a client's real product photos for a live demo,
 // or use "+ Add a product" in the UI to load them without touching code.
@@ -431,6 +423,10 @@ document.getElementById('new-look-file').addEventListener('change', () => {
 });
 
 document.getElementById('add-look-btn').onclick = async () => {
+  const code = prompt('Enter the code to add a product:');
+  if (code === null) return; // cancelled
+  if (code !== ADMIN_KEY) { alert('Incorrect code.'); return; }
+
   const name = document.getElementById('new-look-name').value.trim();
   const price = document.getElementById('new-look-price').value.trim();
   const urlInput = document.getElementById('new-look-url').value.trim();
