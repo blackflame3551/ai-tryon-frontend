@@ -340,14 +340,16 @@ const MERCHANT_KEY = "mch_live_test_789"; // your merchant API key
 const ADMIN_KEY = "empire2026"; // change this — required to add a product to the lookbook
 /* ========================================================== */
 
-// Starter lookbook — replace image URLs with a client's real product photos for a live demo,
-// or use "+ Add a product" in the UI to load them without touching code.
-let looks = [
-  { id: "look-1", name: "Premium Streetwear Hoodie", price: "$79.00", image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=600" },
-  { id: "look-2", name: "Tailored Wool Coat", price: "$228.00", image: "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=600" },
-  { id: "look-3", name: "Silk Slip Dress", price: "$142.00", image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600" },
+// Starter looks — used only once, to seed the backend the very first time
+// a merchant has an empty lookbook. After that, everything is loaded from
+// and saved to the backend, so it's permanent and shared across visitors.
+const STARTER_LOOKS = [
+  { name: "Premium Streetwear Hoodie", price: "$79.00", image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=600" },
+  { name: "Tailored Wool Coat", price: "$228.00", image: "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=600" },
+  { name: "Silk Slip Dress", price: "$142.00", image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600" },
 ];
 
+let looks = [];
 let activeLookIndex = 0;
 
 const catalogEl = document.getElementById('catalog');
@@ -357,6 +359,33 @@ const activeNameEl = document.getElementById('active-name');
 const activePriceEl = document.getElementById('active-price');
 const statusEl = document.getElementById('status');
 const tryonBtn = document.getElementById('tryon-btn');
+
+async function fetchLooks() {
+  const res = await fetch(`${BACKEND_API_BASE}/api/v1/tryon/looks`, {
+    headers: { 'X-Merchant-API-Key': MERCHANT_KEY }
+  });
+  if (!res.ok) throw new Error('Could not load the lookbook.');
+  const data = await res.json();
+  return data.looks;
+}
+
+async function createLookOnBackend(look) {
+  const res = await fetch(`${BACKEND_API_BASE}/api/v1/tryon/looks`, {
+    method: 'POST',
+    headers: { 'X-Merchant-API-Key': MERCHANT_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify(look)
+  });
+  if (!res.ok) throw new Error('Could not save the product.');
+  return await res.json();
+}
+
+async function deleteLookOnBackend(id) {
+  const res = await fetch(`${BACKEND_API_BASE}/api/v1/tryon/looks/${id}`, {
+    method: 'DELETE',
+    headers: { 'X-Merchant-API-Key': MERCHANT_KEY }
+  });
+  if (!res.ok) throw new Error('Could not remove the product.');
+}
 
 function renderCatalog() {
   // Clear existing look-card elements (keep the add-look form, which is last child)
@@ -384,8 +413,15 @@ function renderCatalog() {
   });
 }
 
-function removeLook(i) {
+async function removeLook(i) {
   if (looks.length <= 1) { alert('Keep at least one look in the lookbook.'); return; }
+  const look = looks[i];
+  try {
+    await deleteLookOnBackend(look.id);
+  } catch (e) {
+    alert(e.message);
+    return;
+  }
   looks.splice(i, 1);
   if (activeLookIndex >= looks.length) activeLookIndex = looks.length - 1;
   else if (activeLookIndex > i) activeLookIndex -= 1;
@@ -441,7 +477,8 @@ document.getElementById('add-look-btn').onclick = async () => {
     }
     if (!imageUrl) { alert('Paste an image URL or upload a photo of the product.'); return; }
 
-    looks.push({ id: 'look-' + Date.now(), name, price: price || '', image: imageUrl });
+    const saved = await createLookOnBackend({ name, price: price || '', image: imageUrl });
+    looks.push(saved);
     selectLook(looks.length - 1);
 
     document.getElementById('new-look-name').value = '';
@@ -582,8 +619,24 @@ function pollStatus(sessionId) {
 }
 
 /* ---------- Init ---------- */
-renderCatalog();
-selectLook(0);
+async function initCatalog() {
+  try {
+    looks = await fetchLooks();
+    if (looks.length === 0) {
+      // First time this merchant has used the demo — seed their permanent
+      // lookbook with the starter looks, once.
+      for (const starter of STARTER_LOOKS) {
+        const saved = await createLookOnBackend(starter);
+        looks.push(saved);
+      }
+    }
+  } catch (e) {
+    setStatus('Could not load the lookbook: ' + e.message, 'err');
+    looks = STARTER_LOOKS.map((l, i) => ({ id: 'local-' + i, ...l })); // fallback so the page still works
+  }
+  selectLook(0);
+}
+initCatalog();
 </script>
 </body>
 </html>
