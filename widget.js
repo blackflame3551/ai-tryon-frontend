@@ -78,7 +78,7 @@
       position: relative; border-radius: 8px; overflow: hidden;
       background: #000; aspect-ratio: 3/4;
     }
-    .mirror-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .mirror-frame img { width: 100%; height: 100%; object-fit: contain; display: block; }
     .scan-line {
       position: absolute; left: 0; right: 0; top: 0; height: 2px;
       background: linear-gradient(90deg, transparent, ${GOLD}, transparent);
