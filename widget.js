@@ -9,9 +9,15 @@
  *        data-product-id="prod_123"
  *        data-product-name="Premium Streetwear Hoodie"
  *        data-product-price="$79.00"
- *        data-product-image="https://cdn.yourstore.com/hoodie.jpg">
+ *        data-product-image="https://cdn.yourstore.com/hoodie.jpg"
+ *        data-product-category="apparel">
  *   </div>
  *   <script src="https://your-cdn.com/widget.js" defer></script>
+ *
+ * data-product-category defaults to "apparel" if omitted. For jewelry,
+ * use one of: "jewelry_necklace", "jewelry_bracelet", "jewelry_ring",
+ * "jewelry_earrings" — these route to a specialized jewelry model instead
+ * of the general apparel one.
  *
  * Multiple widgets (e.g. a collection/listing page) work automatically —
  * every element with class "ai-tryon-widget" on the page gets its own
@@ -146,6 +152,7 @@
     const productName = container.dataset.productName || "This item";
     const productPrice = container.dataset.productPrice || "";
     const productImage = container.dataset.productImage;
+    const productCategory = container.dataset.productCategory || "apparel";
 
     if (!backend || !merchantKey || !productImage) {
       console.error("[ai-tryon-widget] missing required data-backend / data-merchant-key / data-product-image on", container);
@@ -295,7 +302,7 @@
         const initRes = await fetch(`${backend}/api/v1/tryon/init`, {
           method: "POST",
           headers: { "X-Merchant-API-Key": merchantKey, "Content-Type": "application/json" },
-          body: JSON.stringify({ garmentId: productId })
+          body: JSON.stringify({ garmentId: productId, category: productCategory })
         });
         if (!initRes.ok) throw new Error("Could not start a session.");
         const { sessionId } = await initRes.json();
@@ -360,4 +367,9 @@
   } else {
     init();
   }
+
+  // Exposed so pages that swap products dynamically (e.g. a product
+  // carousel) can re-scan for newly-added .ai-tryon-widget elements
+  // without needing a full page reload.
+  window.reinitAiTryonWidgets = init;
 })();

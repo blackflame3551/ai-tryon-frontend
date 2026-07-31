@@ -5,39 +5,111 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Example store product page — widget demo</title>
 <style>
-  body { font-family: -apple-system, sans-serif; background: #f4f2ee; margin: 0; padding: 40px; }
-  .product { max-width: 420px; margin: 0 auto; background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,.06); }
-  .product img { width: 100%; border-radius: 8px; margin-bottom: 16px; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, sans-serif; background: #f4f2ee; margin: 0; padding: 40px 16px; }
+  .wrap { max-width: 420px; margin: 0 auto; }
+  .product { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,.06); position: relative; }
+  .product img { width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; margin-bottom: 16px; background: #eee; }
   .product h1 { font-size: 20px; margin: 0 0 4px; }
   .product .price { color: #666; margin: 0 0 20px; }
+  .nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .nav button {
+    background: #fff; border: 1px solid #ddd; border-radius: 999px; width: 36px; height: 36px;
+    cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center;
+  }
+  .nav button:disabled { opacity: .3; cursor: not-allowed; }
+  .nav .counter { font-size: 12px; color: #888; }
   .note { max-width: 420px; margin: 20px auto 0; font-size: 12px; color: #888; text-align: center; }
+  .loading, .error { text-align: center; padding: 40px 0; color: #888; font-size: 14px; }
 </style>
 </head>
 <body>
 
-  <!-- This block simulates a normal ecom product page with its own CSS —
-       the widget below is unaffected by (and doesn't affect) this page's styles,
-       because it renders inside a Shadow DOM. -->
-  <div class="product">
-    <img src="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=600" alt="Premium Streetwear Hoodie">
-    <h1>Premium Streetwear Hoodie</h1>
-    <p class="price">$79.00 USD</p>
-
-    <!-- ===== The widget — this is the part you copy into a real store ===== -->
-    <div class="ai-tryon-widget"
-         data-backend="https://ai-tryon-backend-production.up.railway.app"
-         data-merchant-key="mch_live_test_789"
-         data-product-id="prod_hoodie_001"
-         data-product-name="Premium Streetwear Hoodie"
-         data-product-price="$79.00"
-         data-product-image="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=600">
-    </div>
-    <script src="./widget.js" defer></script>
-    <!-- ===================================================================== -->
-
+<div class="wrap">
+  <div class="nav">
+    <button id="prev-btn" aria-label="Previous product">←</button>
+    <span class="counter" id="counter">Loading…</span>
+    <button id="next-btn" aria-label="Next product">→</button>
   </div>
 
-  <p class="note">This page simulates any ecom store's product page. The "✨ Try It On" button above is the embeddable widget — same one you'd drop into a real Shopify/WooCommerce/custom store product template.</p>
+  <!-- This block simulates a normal ecom product page with its own CSS —
+       the widget below is unaffected by (and doesn't affect) this page's
+       styles, because it renders inside a Shadow DOM. -->
+  <div class="product" id="product-card">
+    <div class="loading">Loading products from your lookbook…</div>
+  </div>
+</div>
+
+<p class="note">This page simulates a real store's product page. Swipe through the arrows above to preview the widget on any product you've saved in your lookbook — same products, same data, as your main demo site.</p>
+
+<script src="./widget.js" defer></script>
+<script>
+/* ============ CONFIG — same values as your main demo site ============ */
+const BACKEND_API_BASE = "https://ai-tryon-backend-production.up.railway.app";
+const MERCHANT_KEY = "mch_live_test_789";
+/* ======================================================================== */
+
+let products = [];
+let currentIndex = 0;
+
+const productCard = document.getElementById('product-card');
+const counter = document.getElementById('counter');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+
+async function loadProducts() {
+  try {
+    const res = await fetch(`${BACKEND_API_BASE}/api/v1/tryon/looks`, {
+      headers: { 'X-Merchant-API-Key': MERCHANT_KEY }
+    });
+    if (!res.ok) throw new Error('Could not load products.');
+    const data = await res.json();
+    products = data.looks;
+    if (products.length === 0) {
+      productCard.innerHTML = '<div class="error">No products saved yet — add some on your main demo site first.</div>';
+      counter.textContent = '';
+      return;
+    }
+    renderProduct(0);
+  } catch (e) {
+    productCard.innerHTML = `<div class="error">${e.message}</div>`;
+    counter.textContent = '';
+  }
+}
+
+function renderProduct(index) {
+  currentIndex = index;
+  const p = products[index];
+  counter.textContent = `${index + 1} of ${products.length}`;
+  prevBtn.disabled = index === 0;
+  nextBtn.disabled = index === products.length - 1;
+
+  productCard.innerHTML = `
+    <img src="${p.image}" alt="${p.name}">
+    <h1>${p.name}</h1>
+    <p class="price">${p.price || ''}</p>
+    <div class="ai-tryon-widget"
+         data-backend="${BACKEND_API_BASE}"
+         data-merchant-key="${MERCHANT_KEY}"
+         data-product-id="${p.id}"
+         data-product-name="${p.name}"
+         data-product-price="${p.price || ''}"
+         data-product-image="${p.image}"
+         data-product-category="${p.category || 'apparel'}">
+    </div>
+  `;
+
+  // widget.js only auto-initializes elements present when the page first
+  // loads — since we just injected a brand-new .ai-tryon-widget div, ask
+  // it to re-scan and wire up this one too.
+  if (window.reinitAiTryonWidgets) window.reinitAiTryonWidgets();
+}
+
+prevBtn.onclick = () => { if (currentIndex > 0) renderProduct(currentIndex - 1); };
+nextBtn.onclick = () => { if (currentIndex < products.length - 1) renderProduct(currentIndex + 1); };
+
+loadProducts();
+</script>
 
 </body>
 </html>
