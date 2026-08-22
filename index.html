@@ -286,6 +286,13 @@
         <input id="new-look-price" type="text" placeholder="Price">
         <input id="new-look-url" type="text" placeholder="Image URL">
       </div>
+      <select id="new-look-category" style="width:100%; background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:10px; font-size:14px; font-family:'Inter'; margin-bottom:8px;">
+        <option value="apparel">Apparel (clothing)</option>
+        <option value="jewelry_necklace">Jewelry — Necklace</option>
+        <option value="jewelry_bracelet">Jewelry — Bracelet</option>
+        <option value="jewelry_ring">Jewelry — Ring</option>
+        <option value="jewelry_earrings">Jewelry — Earrings (experimental)</option>
+      </select>
       <button type="button" class="btn-mini" id="new-look-upload-btn">Upload image instead</button>
       <input id="new-look-file" type="file" accept="image/png,image/jpeg,image/webp" style="display:none;">
       <div class="add-look-filename" id="new-look-filename"></div>
@@ -342,7 +349,7 @@
 
 <script>
 /* ============ CONFIG — edit before deploying ============ */
-const BACKEND_API_BASE = "https://ai-tryon-backend-production.up.railway.app"; // your Railway backend URL
+const BACKEND_API_BASE = "https://ai-tryon-backend-production-408b.up.railway.app"; // your Railway backend URL
 const MERCHANT_KEY = "mch_live_test_789"; // your merchant API key
 const ADD_CODE = "empire2026"; // change this — required to add a product to the lookbook
 const REMOVE_CODE = "empireremove2026"; // change this — required to remove a product, different from ADD_CODE
@@ -480,6 +487,7 @@ document.getElementById('add-look-btn').onclick = async () => {
   const price = document.getElementById('new-look-price').value.trim();
   const urlInput = document.getElementById('new-look-url').value.trim();
   const fileInput = document.getElementById('new-look-file');
+  const category = document.getElementById('new-look-category').value;
 
   if (!name) { alert('Give the product a name first.'); return; }
 
@@ -490,13 +498,14 @@ document.getElementById('add-look-btn').onclick = async () => {
     }
     if (!imageUrl) { alert('Paste an image URL or upload a photo of the product.'); return; }
 
-    const saved = await createLookOnBackend({ name, price: price || '', image: imageUrl });
+    const saved = await createLookOnBackend({ name, price: price || '', image: imageUrl, category });
     looks.push(saved);
     selectLook(looks.length - 1);
 
     document.getElementById('new-look-name').value = '';
     document.getElementById('new-look-price').value = '';
     document.getElementById('new-look-url').value = '';
+    document.getElementById('new-look-category').value = 'apparel';
     fileInput.value = '';
     document.getElementById('new-look-filename').textContent = '';
   } catch (e) {
@@ -580,7 +589,7 @@ tryonBtn.onclick = async () => {
     const initRes = await fetch(`${BACKEND_API_BASE}/api/v1/tryon/init`, {
       method: 'POST',
       headers: { 'X-Merchant-API-Key': MERCHANT_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ garmentId: look.id })
+      body: JSON.stringify({ garmentId: look.id, category: look.category || 'apparel' })
     });
     if (!initRes.ok) throw new Error('Could not start a session.');
     const { sessionId } = await initRes.json();
