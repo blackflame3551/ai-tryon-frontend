@@ -29,15 +29,15 @@
 (function () {
   "use strict";
 
-  const GOLD = "#C6A664";
-  const GOLD_DIM = "#8B7A52";
-  const BG = "#0D0C0F";
-  const PANEL = "#17151A";
-  const BORDER = "#2A272E";
-  const TEXT = "#F2EFE9";
-  const DIM = "#9A968D";
-  const SUCCESS = "#6E9C7D";
-  const RUST = "#A85C48";
+  const GOLD = "#9C7A3D";
+  const GOLD_DIM = "#C9AD78";
+  const BG = "#FFFFFF";
+  const PANEL = "#F7F5F0";
+  const BORDER = "#E2DDD0";
+  const TEXT = "#1A1816";
+  const DIM = "#6B665C";
+  const SUCCESS = "#3F7A50";
+  const RUST = "#B14A34";
 
   const STYLE = `
     * { box-sizing: border-box; }
@@ -50,7 +50,7 @@
       padding: 12px 22px; border-radius: 999px; font-weight: 600;
       font-size: 14px; cursor: pointer; transition: background .15s ease;
     }
-    .trigger:hover { background: #D6B678; }
+    .trigger:hover { background: #B08F4F; }
 
     .overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,.72);
@@ -132,7 +132,7 @@
       padding: 13px; border-radius: 999px; font-weight: 600; font-size: 13.5px;
       cursor: pointer; margin-top: 12px;
     }
-    .submit-btn:hover { background: #D6B678; }
+    .submit-btn:hover { background: #B08F4F; }
     .submit-btn:disabled { opacity: .5; cursor: not-allowed; }
 
     .status {

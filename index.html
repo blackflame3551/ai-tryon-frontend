@@ -10,16 +10,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0D0C0F;
-    --panel:#17151A;
-    --panel-2:#1D1B21;
-    --border:#2A272E;
-    --text:#F2EFE9;
-    --dim:#9A968D;
-    --gold:#C6A664;
-    --gold-dim:#8B7A52;
-    --rust:#A85C48;
-    --success:#6E9C7D;
+    --bg:#FFFFFF;
+    --panel:#F7F5F0;
+    --panel-2:#EFEBE2;
+    --border:#E2DDD0;
+    --text:#1A1816;
+    --dim:#6B665C;
+    --gold:#9C7A3D;
+    --gold-dim:#C9AD78;
+    --rust:#B14A34;
+    --success:#3F7A50;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -60,6 +60,8 @@
     grid-template-columns:300px 1fr;
     gap:0;
     min-height:calc(100vh - 73px);
+    max-width:1400px;
+    margin:0 auto;
   }
   @media (max-width:860px){
     main{grid-template-columns:1fr;}
@@ -102,7 +104,7 @@
   }
   .look-meta{overflow:hidden;}
   .look-eyebrow{
-    font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gold-dim);
+    font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gold);
     letter-spacing:0.1em;
   }
   .look-name{
@@ -160,7 +162,7 @@
   .mirror-tag{
     position:absolute;left:-34px;top:50%;transform:translateY(-50%) rotate(-90deg);
     font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.18em;
-    color:var(--gold-dim);text-transform:uppercase;white-space:nowrap;
+    color:var(--gold);text-transform:uppercase;white-space:nowrap;
   }
   @media (max-width:520px){ .mirror-tag{display:none;} }
 
@@ -247,7 +249,7 @@
     padding:14px;border-radius:99px;font-weight:600;font-size:14px;
     cursor:pointer;letter-spacing:.01em;transition:background .15s ease, transform .1s ease;
   }
-  .btn-primary:hover{background:#D6B678;}
+  .btn-primary:hover{background:#B08F4F;}
   .btn-primary:active{transform:scale(.99);}
   .btn-primary:disabled{opacity:.5;cursor:not-allowed;}
 
@@ -322,6 +324,7 @@
     </div>
 
     <div class="controls">
+      <p class="photo-tip">💡 Tip: your photo's framing sets the limit — upload a full-body photo for dresses, swimwear, or full outfits, since the AI can't add body parts that aren't in your original photo.</p>
       <div class="upload-tabs">
         <button class="upload-tab active" data-tab="file">Upload photo</button>
         <button class="upload-tab" data-tab="url">Paste URL</button>
