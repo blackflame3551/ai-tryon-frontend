@@ -19,6 +19,11 @@
  * "jewelry_earrings" — these route to a specialized jewelry model instead
  * of the general apparel one.
  *
+ * data-lang is optional — auto-detected from the host page's <html lang="..">
+ * if omitted. Falls back to English if the detected language isn't
+ * supported. Override explicitly with e.g. data-lang="es" if needed.
+ * Supported: en, es, fr, de, pt, it, ro, nl.
+ *
  * Multiple widgets (e.g. a collection/listing page) work automatically —
  * every element with class "ai-tryon-widget" on the page gets its own
  * button + modal, each configured from its own data attributes.
@@ -38,6 +43,145 @@
   const DIM = "#6B665C";
   const SUCCESS = "#3F7A50";
   const RUST = "#B14A34";
+
+  const TRANSLATIONS = {
+    en: {
+      tryItOn: "✨ Try It On", modalTitle: "See it on you",
+      modalSub: "Upload a photo and we'll show you wearing it.",
+      tabUpload: "Upload photo", tabUrl: "Paste URL",
+      dropzone: "📷 Drop a photo here, or click to choose",
+      urlPlaceholder: "https://example.com/your-photo.jpg",
+      submit: "Try it on", close: "Close",
+      statusUploading: "Uploading your photo…", statusSession: "Opening a session…",
+      statusQueue: "Sending it to the fitting room…", statusGenerating: "Generating your look…",
+      statusDone: "Done — here's the look.", statusFailedPrefix: "Failed: ",
+      statusPrefix: "Status: ", unknownError: "unknown error",
+      errChoosePhoto: "Choose a photo first.", errPasteUrl: "Paste a photo URL first.",
+      errUploadFailed: "Photo upload failed.", errSession: "Could not start a session.",
+      errQueue: "Could not queue the job.",
+      statusWords: { initiated: "initiated", queued: "queued", processing: "processing" }
+    },
+    es: {
+      tryItOn: "✨ Pruébatelo", modalTitle: "Míratelo puesto",
+      modalSub: "Sube una foto y te mostraremos cómo te queda.",
+      tabUpload: "Subir foto", tabUrl: "Pegar URL",
+      dropzone: "📷 Arrastra una foto aquí, o haz clic para elegir",
+      urlPlaceholder: "https://ejemplo.com/tu-foto.jpg",
+      submit: "Probarlo", close: "Cerrar",
+      statusUploading: "Subiendo tu foto…", statusSession: "Abriendo sesión…",
+      statusQueue: "Enviando al probador…", statusGenerating: "Generando tu look…",
+      statusDone: "Listo — aquí está el resultado.", statusFailedPrefix: "Error: ",
+      statusPrefix: "Estado: ", unknownError: "error desconocido",
+      errChoosePhoto: "Elige una foto primero.", errPasteUrl: "Pega una URL de foto primero.",
+      errUploadFailed: "Error al subir la foto.", errSession: "No se pudo iniciar la sesión.",
+      errQueue: "No se pudo encolar el trabajo.",
+      statusWords: { initiated: "iniciado", queued: "en cola", processing: "procesando" }
+    },
+    fr: {
+      tryItOn: "✨ Essayer", modalTitle: "Voyez-le sur vous",
+      modalSub: "Téléchargez une photo et voyez le rendu sur vous.",
+      tabUpload: "Télécharger une photo", tabUrl: "Coller une URL",
+      dropzone: "📷 Déposez une photo ici, ou cliquez pour choisir",
+      urlPlaceholder: "https://exemple.com/votre-photo.jpg",
+      submit: "Essayer maintenant", close: "Fermer",
+      statusUploading: "Téléchargement de votre photo…", statusSession: "Ouverture de la session…",
+      statusQueue: "Envoi à la cabine d'essayage…", statusGenerating: "Génération de votre look…",
+      statusDone: "Terminé — voici le résultat.", statusFailedPrefix: "Échec : ",
+      statusPrefix: "Statut : ", unknownError: "erreur inconnue",
+      errChoosePhoto: "Choisissez d'abord une photo.", errPasteUrl: "Collez d'abord une URL de photo.",
+      errUploadFailed: "Échec du téléchargement de la photo.", errSession: "Impossible de démarrer la session.",
+      errQueue: "Impossible de mettre en file d'attente.",
+      statusWords: { initiated: "initié", queued: "en file d'attente", processing: "en cours" }
+    },
+    de: {
+      tryItOn: "✨ Anprobieren", modalTitle: "Sieh es an dir",
+      modalSub: "Lade ein Foto hoch und sieh, wie es an dir aussieht.",
+      tabUpload: "Foto hochladen", tabUrl: "URL einfügen",
+      dropzone: "📷 Foto hier ablegen oder klicken zum Auswählen",
+      urlPlaceholder: "https://beispiel.com/dein-foto.jpg",
+      submit: "Jetzt anprobieren", close: "Schließen",
+      statusUploading: "Foto wird hochgeladen…", statusSession: "Sitzung wird gestartet…",
+      statusQueue: "Wird an die Umkleide gesendet…", statusGenerating: "Dein Look wird erstellt…",
+      statusDone: "Fertig — hier ist das Ergebnis.", statusFailedPrefix: "Fehlgeschlagen: ",
+      statusPrefix: "Status: ", unknownError: "unbekannter Fehler",
+      errChoosePhoto: "Wähle zuerst ein Foto.", errPasteUrl: "Füge zuerst eine Foto-URL ein.",
+      errUploadFailed: "Foto-Upload fehlgeschlagen.", errSession: "Sitzung konnte nicht gestartet werden.",
+      errQueue: "Auftrag konnte nicht eingereiht werden.",
+      statusWords: { initiated: "gestartet", queued: "in Warteschlange", processing: "in Bearbeitung" }
+    },
+    pt: {
+      tryItOn: "✨ Experimentar", modalTitle: "Veja em você",
+      modalSub: "Envie uma foto e mostramos como fica em você.",
+      tabUpload: "Enviar foto", tabUrl: "Colar URL",
+      dropzone: "📷 Solte uma foto aqui, ou clique para escolher",
+      urlPlaceholder: "https://exemplo.com/sua-foto.jpg",
+      submit: "Experimentar agora", close: "Fechar",
+      statusUploading: "Enviando sua foto…", statusSession: "Iniciando sessão…",
+      statusQueue: "Enviando ao provador…", statusGenerating: "Gerando seu look…",
+      statusDone: "Pronto — aqui está o resultado.", statusFailedPrefix: "Falhou: ",
+      statusPrefix: "Status: ", unknownError: "erro desconhecido",
+      errChoosePhoto: "Escolha uma foto primeiro.", errPasteUrl: "Cole uma URL de foto primeiro.",
+      errUploadFailed: "Falha ao enviar a foto.", errSession: "Não foi possível iniciar a sessão.",
+      errQueue: "Não foi possível enfileirar.",
+      statusWords: { initiated: "iniciado", queued: "na fila", processing: "processando" }
+    },
+    it: {
+      tryItOn: "✨ Provalo", modalTitle: "Guardalo su di te",
+      modalSub: "Carica una foto e ti mostriamo come ti sta.",
+      tabUpload: "Carica foto", tabUrl: "Incolla URL",
+      dropzone: "📷 Trascina una foto qui, o clicca per scegliere",
+      urlPlaceholder: "https://esempio.com/tua-foto.jpg",
+      submit: "Prova ora", close: "Chiudi",
+      statusUploading: "Caricamento della foto…", statusSession: "Apertura sessione…",
+      statusQueue: "Invio al camerino…", statusGenerating: "Generazione del look…",
+      statusDone: "Fatto — ecco il risultato.", statusFailedPrefix: "Non riuscito: ",
+      statusPrefix: "Stato: ", unknownError: "errore sconosciuto",
+      errChoosePhoto: "Scegli prima una foto.", errPasteUrl: "Incolla prima un URL foto.",
+      errUploadFailed: "Caricamento foto non riuscito.", errSession: "Impossibile avviare la sessione.",
+      errQueue: "Impossibile mettere in coda.",
+      statusWords: { initiated: "avviato", queued: "in coda", processing: "in elaborazione" }
+    },
+    ro: {
+      tryItOn: "✨ Probează", modalTitle: "Vezi cum îți stă",
+      modalSub: "Încarcă o poză și îți arătăm cum arată pe tine.",
+      tabUpload: "Încarcă poză", tabUrl: "Lipește URL",
+      dropzone: "📷 Trage o poză aici, sau apasă pentru a alege",
+      urlPlaceholder: "https://exemplu.com/poza-ta.jpg",
+      submit: "Probează acum", close: "Închide",
+      statusUploading: "Se încarcă poza…", statusSession: "Se deschide sesiunea…",
+      statusQueue: "Se trimite la cabina de probă…", statusGenerating: "Se generează look-ul…",
+      statusDone: "Gata — iată rezultatul.", statusFailedPrefix: "Eșuat: ",
+      statusPrefix: "Stare: ", unknownError: "eroare necunoscută",
+      errChoosePhoto: "Alege mai întâi o poză.", errPasteUrl: "Lipește mai întâi un URL de poză.",
+      errUploadFailed: "Încărcarea pozei a eșuat.", errSession: "Sesiunea nu a putut fi pornită.",
+      errQueue: "Comanda nu a putut fi pusă în coadă.",
+      statusWords: { initiated: "inițiat", queued: "în așteptare", processing: "se procesează" }
+    },
+    nl: {
+      tryItOn: "✨ Pas het aan", modalTitle: "Bekijk het op jou",
+      modalSub: "Upload een foto en we laten zien hoe het je staat.",
+      tabUpload: "Foto uploaden", tabUrl: "URL plakken",
+      dropzone: "📷 Sleep hier een foto, of klik om te kiezen",
+      urlPlaceholder: "https://voorbeeld.com/jouw-foto.jpg",
+      submit: "Nu passen", close: "Sluiten",
+      statusUploading: "Foto wordt geüpload…", statusSession: "Sessie wordt gestart…",
+      statusQueue: "Wordt naar de paskamer gestuurd…", statusGenerating: "Jouw look wordt gemaakt…",
+      statusDone: "Klaar — hier is het resultaat.", statusFailedPrefix: "Mislukt: ",
+      statusPrefix: "Status: ", unknownError: "onbekende fout",
+      errChoosePhoto: "Kies eerst een foto.", errPasteUrl: "Plak eerst een foto-URL.",
+      errUploadFailed: "Foto uploaden mislukt.", errSession: "Sessie kon niet worden gestart.",
+      errQueue: "Taak kon niet in wachtrij worden gezet.",
+      statusWords: { initiated: "gestart", queued: "in wachtrij", processing: "wordt verwerkt" }
+    }
+  };
+
+  function resolveLang(container) {
+    const explicit = (container.dataset.lang || "").toLowerCase().slice(0, 2);
+    if (explicit && TRANSLATIONS[explicit]) return explicit;
+    const pageLang = (document.documentElement.lang || "").toLowerCase().slice(0, 2);
+    if (pageLang && TRANSLATIONS[pageLang]) return pageLang;
+    return "en";
+  }
 
   const STYLE = `
     * { box-sizing: border-box; }
@@ -159,6 +303,9 @@
       return;
     }
 
+    const lang = resolveLang(container);
+    const t = TRANSLATIONS[lang];
+
     const root = container.attachShadow({ mode: "open" });
     const style = document.createElement("style");
     style.textContent = STYLE;
@@ -167,12 +314,12 @@
     const wrap = document.createElement("div");
     wrap.className = "wrap";
     wrap.innerHTML = `
-      <button class="trigger" type="button">✨ Try It On</button>
+      <button class="trigger" type="button">${t.tryItOn}</button>
       <div class="overlay">
         <div class="modal" role="dialog" aria-modal="true">
-          <button class="close-btn" type="button" aria-label="Close">×</button>
-          <h2>See it on you</h2>
-          <p class="sub">Upload a photo and we'll show you wearing it.</p>
+          <button class="close-btn" type="button" aria-label="${t.close}">×</button>
+          <h2>${t.modalTitle}</h2>
+          <p class="sub">${t.modalSub}</p>
 
           <div class="mirror">
             <div class="mirror-frame">
@@ -186,22 +333,22 @@
           </div>
 
           <div class="tabs">
-            <button class="tab active" type="button" data-tab="file">Upload photo</button>
-            <button class="tab" type="button" data-tab="url">Paste URL</button>
+            <button class="tab active" type="button" data-tab="file">${t.tabUpload}</button>
+            <button class="tab" type="button" data-tab="url">${t.tabUrl}</button>
           </div>
 
           <div class="pane active" data-pane="file">
             <label class="dropzone">
-              📷 Drop a photo here, or click to choose
+              ${t.dropzone}
               <input type="file" accept="image/png,image/jpeg,image/webp">
             </label>
             <img class="preview-thumb" alt="">
           </div>
           <div class="pane" data-pane="url">
-            <input type="text" class="user-photo-url" placeholder="https://example.com/your-photo.jpg">
+            <input type="text" class="user-photo-url" placeholder="${t.urlPlaceholder}">
           </div>
 
-          <button class="submit-btn" type="button">Try it on</button>
+          <button class="submit-btn" type="button">${t.submit}</button>
           <div class="status"></div>
         </div>
       </div>
@@ -274,7 +421,7 @@
         headers: { "X-Merchant-API-Key": merchantKey },
         body: formData
       });
-      if (!res.ok) throw new Error("Photo upload failed.");
+      if (!res.ok) throw new Error(t.errUploadFailed);
       const data = await res.json();
       return data.imageUrl;
     }
@@ -282,41 +429,41 @@
     async function resolveUserPhotoUrl() {
       const activeTab = wrap.querySelector(".tab.active").dataset.tab;
       if (activeTab === "file") {
-        if (!fileInput.files[0]) throw new Error("Choose a photo first.");
+        if (!fileInput.files[0]) throw new Error(t.errChoosePhoto);
         return await uploadImage(fileInput.files[0]);
       }
       const url = urlInput.value.trim();
-      if (!url) throw new Error("Paste a photo URL first.");
+      if (!url) throw new Error(t.errPasteUrl);
       return url;
     }
 
     submitBtn.onclick = async () => {
       submitBtn.disabled = true;
       resetStatus();
-      setStatus("Uploading your photo…", "pending");
+      setStatus(t.statusUploading, "pending");
 
       try {
         const userImageUrl = await resolveUserPhotoUrl();
 
-        setStatus("Opening a session…", "pending");
+        setStatus(t.statusSession, "pending");
         const initRes = await fetch(`${backend}/api/v1/tryon/init`, {
           method: "POST",
           headers: { "X-Merchant-API-Key": merchantKey, "Content-Type": "application/json" },
           body: JSON.stringify({ garmentId: productId, category: productCategory })
         });
-        if (!initRes.ok) throw new Error("Could not start a session.");
+        if (!initRes.ok) throw new Error(t.errSession);
         const { sessionId } = await initRes.json();
 
-        setStatus("Sending it to the fitting room…", "pending");
+        setStatus(t.statusQueue, "pending");
         const processRes = await fetch(`${backend}/api/v1/tryon/process`, {
           method: "POST",
           headers: { "X-Merchant-API-Key": merchantKey, "Content-Type": "application/json" },
           body: JSON.stringify({ sessionId, garmentImageUrl: productImage, userImageUrl })
         });
-        if (!processRes.ok) throw new Error("Could not queue the job.");
+        if (!processRes.ok) throw new Error(t.errQueue);
 
         mirrorFrame.classList.add("scanning");
-        setStatus("Generating your look…", "pending");
+        setStatus(t.statusGenerating, "pending");
         pollStatus(sessionId);
 
       } catch (err) {
@@ -337,15 +484,16 @@
             clearInterval(interval);
             mirrorFrame.classList.remove("scanning");
             resultImg.src = data.resultImageUrl;
-            setStatus("Done — here's the look.", "ok");
+            setStatus(t.statusDone, "ok");
             submitBtn.disabled = false;
           } else if (data.status === "failed") {
             clearInterval(interval);
             mirrorFrame.classList.remove("scanning");
-            setStatus("Failed: " + (data.errorReason || "unknown error"), "err");
+            setStatus(t.statusFailedPrefix + (data.errorReason || t.unknownError), "err");
             submitBtn.disabled = false;
           } else {
-            setStatus("Status: " + data.status + "…", "pending");
+            const word = t.statusWords[data.status] || data.status;
+            setStatus(t.statusPrefix + word + "…", "pending");
           }
         } catch (e) {
           // transient network hiccup while polling — keep trying silently
