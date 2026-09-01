@@ -306,15 +306,35 @@
     const lang = resolveLang(container);
     const t = TRANSLATIONS[lang];
 
-    const root = container.attachShadow({ mode: "open" });
-    const style = document.createElement("style");
-    style.textContent = STYLE;
-    root.appendChild(style);
+    // ---- Trigger button: stays wherever the container was placed in the page ----
+    const triggerRoot = container.attachShadow({ mode: "open" });
+    const triggerStyle = document.createElement("style");
+    triggerStyle.textContent = STYLE;
+    triggerRoot.appendChild(triggerStyle);
+
+    const trigger = document.createElement("button");
+    trigger.className = "trigger";
+    trigger.type = "button";
+    trigger.textContent = t.tryItOn;
+    triggerRoot.appendChild(trigger);
+
+    // ---- Modal: appended directly to <body>, NOT nested inside the page's
+    // own layout. This matters — if the trigger button's location has any
+    // CSS `transform` on an ancestor (common in theme animations/sliders),
+    // `position: fixed` inside it stops meaning "relative to the screen"
+    // and instead traps the modal relative to that ancestor, making it
+    // appear tiny and off to one side instead of centered. Living on
+    // <body> directly sidesteps that entirely. ----
+    const modalHost = document.createElement("div");
+    document.body.appendChild(modalHost);
+    const modalRoot = modalHost.attachShadow({ mode: "open" });
+    const modalStyle = document.createElement("style");
+    modalStyle.textContent = STYLE;
+    modalRoot.appendChild(modalStyle);
 
     const wrap = document.createElement("div");
     wrap.className = "wrap";
     wrap.innerHTML = `
-      <button class="trigger" type="button">${t.tryItOn}</button>
       <div class="overlay">
         <div class="modal" role="dialog" aria-modal="true">
           <button class="close-btn" type="button" aria-label="${t.close}">×</button>
@@ -353,10 +373,9 @@
         </div>
       </div>
     `;
-    root.appendChild(wrap);
+    modalRoot.appendChild(wrap);
 
     // ---- element refs ----
-    const trigger = wrap.querySelector(".trigger");
     const overlay = wrap.querySelector(".overlay");
     const closeBtn = wrap.querySelector(".close-btn");
     const resultImg = wrap.querySelector(".result-img");
