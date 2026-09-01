@@ -326,6 +326,7 @@
     // appear tiny and off to one side instead of centered. Living on
     // <body> directly sidesteps that entirely. ----
     const modalHost = document.createElement("div");
+    modalHost.className = "ai-tryon-modal-host";
     document.body.appendChild(modalHost);
     const modalRoot = modalHost.attachShadow({ mode: "open" });
     const modalStyle = document.createElement("style");
