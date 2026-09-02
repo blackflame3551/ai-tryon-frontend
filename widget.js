@@ -391,9 +391,34 @@
     const submitBtn = wrap.querySelector(".submit-btn");
     const statusEl = wrap.querySelector(".status");
 
+    let activePollInterval = null;
+
+    function closeModal() {
+      overlay.classList.remove("open");
+      if (activePollInterval) {
+        clearInterval(activePollInterval);
+        activePollInterval = null;
+      }
+      // Reset everything so the next open starts fresh, not showing
+      // last time's photo, result, or status message.
+      resultImg.src = productImage;
+      mirrorFrame.classList.remove("scanning");
+      fileInput.value = "";
+      previewThumb.src = "";
+      previewThumb.style.display = "none";
+      urlInput.value = "";
+      tabs.forEach(t => t.classList.remove("active"));
+      panes.forEach(p => p.classList.remove("active"));
+      wrap.querySelector('.tab[data-tab="file"]').classList.add("active");
+      wrap.querySelector('.pane[data-pane="file"]').classList.add("active");
+      statusEl.className = "status";
+      statusEl.textContent = "";
+      submitBtn.disabled = false;
+    }
+
     trigger.onclick = () => overlay.classList.add("open");
-    closeBtn.onclick = () => overlay.classList.remove("open");
-    overlay.onclick = (e) => { if (e.target === overlay) overlay.classList.remove("open"); };
+    closeBtn.onclick = closeModal;
+    overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
 
     tabs.forEach(tab => {
       tab.onclick = () => {
@@ -494,7 +519,7 @@
     };
 
     function pollStatus(sessionId) {
-      const interval = setInterval(async () => {
+      activePollInterval = setInterval(async () => {
         try {
           const res = await fetch(`${backend}/api/v1/tryon/status/${sessionId}`, {
             headers: { "X-Merchant-API-Key": merchantKey }
@@ -502,13 +527,15 @@
           const data = await res.json();
 
           if (data.status === "completed") {
-            clearInterval(interval);
+            clearInterval(activePollInterval);
+            activePollInterval = null;
             mirrorFrame.classList.remove("scanning");
             resultImg.src = data.resultImageUrl;
             setStatus(t.statusDone, "ok");
             submitBtn.disabled = false;
           } else if (data.status === "failed") {
-            clearInterval(interval);
+            clearInterval(activePollInterval);
+            activePollInterval = null;
             mirrorFrame.classList.remove("scanning");
             setStatus(t.statusFailedPrefix + (data.errorReason || t.unknownError), "err");
             submitBtn.disabled = false;
