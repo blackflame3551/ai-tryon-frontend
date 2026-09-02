@@ -327,6 +327,7 @@
     // <body> directly sidesteps that entirely. ----
     const modalHost = document.createElement("div");
     modalHost.className = "ai-tryon-modal-host";
+    modalHost.style.display = "block"; // :host{all:initial} resets this to inline by default, collapsing the box to 0x0
     document.body.appendChild(modalHost);
     const modalRoot = modalHost.attachShadow({ mode: "open" });
     const modalStyle = document.createElement("style");
