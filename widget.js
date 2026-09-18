@@ -48,7 +48,7 @@
     en: {
       trigger: "🧍 Find Your Size & Style", modalTitle: "Find your fit",
       modalSub: "Answer two quick questions — no photo needed.",
-      heightLabel: "Height (cm)", weightLabel: "Weight (kg)", fitLabel: "Fit preference",
+      heightLabel: "Height", weightLabel: "Weight", fitLabel: "Fit preference",
       fitTight: "Tight", fitRegular: "Regular", fitLoose: "Loose",
       submit: "Get my recommendation", close: "Close",
       statusChecking: "Finding your size…",
@@ -60,7 +60,7 @@
     es: {
       trigger: "🧍 Encuentra tu talla y estilo", modalTitle: "Encuentra tu talla",
       modalSub: "Responde dos preguntas rápidas — sin necesidad de foto.",
-      heightLabel: "Altura (cm)", weightLabel: "Peso (kg)", fitLabel: "Preferencia de ajuste",
+      heightLabel: "Altura", weightLabel: "Peso", fitLabel: "Preferencia de ajuste",
       fitTight: "Ajustado", fitRegular: "Regular", fitLoose: "Holgado",
       submit: "Obtener mi recomendación", close: "Cerrar",
       statusChecking: "Calculando tu talla…",
@@ -72,7 +72,7 @@
     fr: {
       trigger: "🧍 Trouvez votre taille et style", modalTitle: "Trouvez votre taille",
       modalSub: "Répondez à deux questions rapides — aucune photo requise.",
-      heightLabel: "Taille (cm)", weightLabel: "Poids (kg)", fitLabel: "Préférence de coupe",
+      heightLabel: "Taille", weightLabel: "Poids", fitLabel: "Préférence de coupe",
       fitTight: "Ajusté", fitRegular: "Normal", fitLoose: "Ample",
       submit: "Obtenir ma recommandation", close: "Fermer",
       statusChecking: "Calcul de votre taille…",
@@ -84,7 +84,7 @@
     de: {
       trigger: "🧍 Größe & Stil finden", modalTitle: "Finde deine Größe",
       modalSub: "Beantworte zwei kurze Fragen — kein Foto nötig.",
-      heightLabel: "Größe (cm)", weightLabel: "Gewicht (kg)", fitLabel: "Passform",
+      heightLabel: "Größe", weightLabel: "Gewicht", fitLabel: "Passform",
       fitTight: "Eng", fitRegular: "Normal", fitLoose: "Locker",
       submit: "Empfehlung erhalten", close: "Schließen",
       statusChecking: "Deine Größe wird berechnet…",
@@ -96,7 +96,7 @@
     pt: {
       trigger: "🧍 Encontre seu tamanho e estilo", modalTitle: "Encontre seu tamanho",
       modalSub: "Responda duas perguntas rápidas — sem necessidade de foto.",
-      heightLabel: "Altura (cm)", weightLabel: "Peso (kg)", fitLabel: "Preferência de caimento",
+      heightLabel: "Altura", weightLabel: "Peso", fitLabel: "Preferência de caimento",
       fitTight: "Justo", fitRegular: "Regular", fitLoose: "Solto",
       submit: "Obter minha recomendação", close: "Fechar",
       statusChecking: "Calculando seu tamanho…",
@@ -108,7 +108,7 @@
     it: {
       trigger: "🧍 Trova taglia e stile", modalTitle: "Trova la tua taglia",
       modalSub: "Rispondi a due semplici domande — nessuna foto necessaria.",
-      heightLabel: "Altezza (cm)", weightLabel: "Peso (kg)", fitLabel: "Preferenza di vestibilità",
+      heightLabel: "Altezza", weightLabel: "Peso", fitLabel: "Preferenza di vestibilità",
       fitTight: "Aderente", fitRegular: "Regolare", fitLoose: "Comoda",
       submit: "Ottieni il mio consiglio", close: "Chiudi",
       statusChecking: "Calcolo della taglia…",
@@ -120,7 +120,7 @@
     ro: {
       trigger: "🧍 Găsește-ți mărimea și stilul", modalTitle: "Găsește-ți mărimea",
       modalSub: "Răspunde la două întrebări rapide — fără poză.",
-      heightLabel: "Înălțime (cm)", weightLabel: "Greutate (kg)", fitLabel: "Preferință de fit",
+      heightLabel: "Înălțime", weightLabel: "Greutate", fitLabel: "Preferință de fit",
       fitTight: "Strâns", fitRegular: "Regular", fitLoose: "Larg",
       submit: "Primește recomandarea", close: "Închide",
       statusChecking: "Se calculează mărimea…",
@@ -132,7 +132,7 @@
     nl: {
       trigger: "🧍 Vind je maat & stijl", modalTitle: "Vind je maat",
       modalSub: "Beantwoord twee korte vragen — geen foto nodig.",
-      heightLabel: "Lengte (cm)", weightLabel: "Gewicht (kg)", fitLabel: "Pasvoorkeur",
+      heightLabel: "Lengte", weightLabel: "Gewicht", fitLabel: "Pasvoorkeur",
       fitTight: "Strak", fitRegular: "Normaal", fitLoose: "Los",
       submit: "Krijg mijn aanbeveling", close: "Sluiten",
       statusChecking: "Je maat wordt berekend…",
@@ -201,6 +201,20 @@
       border-radius: 8px; padding: 10px; font-size: 13px; font-family: inherit;
     }
     input[type=number]:focus, select:focus { outline: 2px solid ${GOLD}; outline-offset: 1px; }
+
+    .field-row { display: flex; align-items: center; gap: 8px; margin: 4px 0 0; }
+    .field-row > div { flex: 1; }
+    .unit-toggle { display: inline-flex; gap: 4px; }
+    .unit-btn {
+      background: transparent; border: 1px solid ${BORDER}; color: ${DIM};
+      border-radius: 999px; padding: 3px 10px; font-size: 11px; cursor: pointer;
+    }
+    .unit-btn.active { border-color: ${GOLD}; color: ${GOLD}; }
+    .imperial-pair { display: none; gap: 8px; }
+    .imperial-pair.active { display: flex; }
+    .imperial-pair input { flex: 1; }
+    .metric-field { display: block; }
+    .metric-field.hidden { display: none; }
 
     .submit-btn {
       width: 100%; background: ${GOLD}; color: #161116; border: none;
@@ -294,11 +308,34 @@
             </div>
           </div>
 
-          <label>${t.heightLabel}</label>
-          <input type="number" class="height-input" min="0" placeholder="170">
+          <div class="field-row">
+            <label style="margin:0;">${t.heightLabel}</label>
+            <div class="unit-toggle height-unit-toggle">
+              <button type="button" class="unit-btn active" data-unit="cm">cm</button>
+              <button type="button" class="unit-btn" data-unit="ftin">ft/in</button>
+            </div>
+          </div>
+          <div class="metric-field height-cm-field">
+            <input type="number" class="height-cm-input" min="0" placeholder="170">
+          </div>
+          <div class="imperial-pair height-ftin-field">
+            <input type="number" class="height-ft-input" min="0" placeholder="ft">
+            <input type="number" class="height-in-input" min="0" max="11" placeholder="in">
+          </div>
 
-          <label>${t.weightLabel}</label>
-          <input type="number" class="weight-input" min="0" placeholder="65">
+          <div class="field-row">
+            <label style="margin:0;">${t.weightLabel}</label>
+            <div class="unit-toggle weight-unit-toggle">
+              <button type="button" class="unit-btn active" data-unit="kg">kg</button>
+              <button type="button" class="unit-btn" data-unit="lb">lb</button>
+            </div>
+          </div>
+          <div class="metric-field weight-kg-field">
+            <input type="number" class="weight-kg-input" min="0" placeholder="65">
+          </div>
+          <div class="imperial-pair weight-lb-field">
+            <input type="number" class="weight-lb-input" min="0" placeholder="lb">
+          </div>
 
           <label>${t.fitLabel}</label>
           <select class="fit-input">
@@ -325,8 +362,11 @@
     // ---- element refs ----
     const overlay = wrap.querySelector(".overlay");
     const closeBtn = wrap.querySelector(".close-btn");
-    const heightInput = wrap.querySelector(".height-input");
-    const weightInput = wrap.querySelector(".weight-input");
+    const heightCmInput = wrap.querySelector(".height-cm-input");
+    const heightFtInput = wrap.querySelector(".height-ft-input");
+    const heightInInput = wrap.querySelector(".height-in-input");
+    const weightKgInput = wrap.querySelector(".weight-kg-input");
+    const weightLbInput = wrap.querySelector(".weight-lb-input");
     const fitInput = wrap.querySelector(".fit-input");
     const submitBtn = wrap.querySelector(".submit-btn");
     const statusEl = wrap.querySelector(".status");
@@ -343,6 +383,34 @@
     closeBtn.onclick = closeModal;
     overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
 
+    // ---- unit toggles: swap which input group is visible, conversion
+    // happens at submit time so the API always receives cm/kg ----
+    let heightUnit = "cm";
+    let weightUnit = "kg";
+    const heightCmField = wrap.querySelector(".height-cm-field");
+    const heightFtinField = wrap.querySelector(".height-ftin-field");
+    const weightKgField = wrap.querySelector(".weight-kg-field");
+    const weightLbField = wrap.querySelector(".weight-lb-field");
+
+    wrap.querySelectorAll(".height-unit-toggle .unit-btn").forEach(btn => {
+      btn.onclick = () => {
+        wrap.querySelectorAll(".height-unit-toggle .unit-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        heightUnit = btn.dataset.unit;
+        heightCmField.classList.toggle("hidden", heightUnit !== "cm");
+        heightFtinField.classList.toggle("active", heightUnit === "ftin");
+      };
+    });
+    wrap.querySelectorAll(".weight-unit-toggle .unit-btn").forEach(btn => {
+      btn.onclick = () => {
+        wrap.querySelectorAll(".weight-unit-toggle .unit-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        weightUnit = btn.dataset.unit;
+        weightKgField.classList.toggle("hidden", weightUnit !== "kg");
+        weightLbField.classList.toggle("active", weightUnit === "lb");
+      };
+    });
+
     function setStatus(text, kind) {
       statusEl.className = "status show" + (kind ? " " + kind : "");
       statusEl.textContent = text;
@@ -353,8 +421,23 @@
     }
 
     submitBtn.onclick = async () => {
-      const height_cm = parseFloat(heightInput.value);
-      const weight_kg = parseFloat(weightInput.value);
+      let height_cm, weight_kg;
+
+      if (heightUnit === "cm") {
+        height_cm = parseFloat(heightCmInput.value);
+      } else {
+        const ft = parseFloat(heightFtInput.value) || 0;
+        const inches = parseFloat(heightInInput.value) || 0;
+        height_cm = (ft * 12 + inches) * 2.54;
+      }
+
+      if (weightUnit === "kg") {
+        weight_kg = parseFloat(weightKgInput.value);
+      } else {
+        const lb = parseFloat(weightLbInput.value);
+        weight_kg = lb * 0.453592;
+      }
+
       const fit_preference = fitInput.value;
 
       resultEl.classList.remove("show");

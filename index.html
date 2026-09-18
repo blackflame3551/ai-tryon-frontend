@@ -158,6 +158,17 @@
     border-radius:8px;padding:12px;font-size:16px;font-family:'Inter';
   }
   .controls input[type=number]:focus, .controls select:focus{outline:2px solid var(--gold);outline-offset:1px;}
+  .field-row{display:flex;align-items:center;justify-content:space-between;}
+  .unit-toggle{display:inline-flex;gap:4px;}
+  .unit-btn{
+    background:transparent;border:1px solid var(--border);color:var(--dim);
+    border-radius:999px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:'IBM Plex Mono',monospace;
+  }
+  .unit-btn.active{border-color:var(--gold);color:var(--gold);}
+  .imperial-pair{display:none;gap:8px;margin-top:6px;}
+  .imperial-pair.active{display:flex;}
+  .imperial-pair input{flex:1;}
+  .metric-field.hidden{display:none;}
 
   .btn-primary{
     width:100%;background:var(--gold);color:#161116;border:none;
@@ -252,14 +263,35 @@
     </div>
 
     <div class="controls">
-      <div class="row">
-        <div>
-          <label>HEIGHT (CM)</label>
-          <input id="height-input" type="number" min="0" placeholder="170">
+      <div>
+        <div class="field-row">
+          <label>HEIGHT</label>
+          <div class="unit-toggle height-unit-toggle">
+            <button type="button" class="unit-btn active" data-unit="cm">cm</button>
+            <button type="button" class="unit-btn" data-unit="ftin">ft/in</button>
+          </div>
         </div>
-        <div>
-          <label>WEIGHT (KG)</label>
-          <input id="weight-input" type="number" min="0" placeholder="65">
+        <div class="metric-field" id="height-cm-field">
+          <input id="height-cm-input" type="number" min="0" placeholder="170">
+        </div>
+        <div class="imperial-pair" id="height-ftin-field">
+          <input id="height-ft-input" type="number" min="0" placeholder="ft">
+          <input id="height-in-input" type="number" min="0" max="11" placeholder="in">
+        </div>
+      </div>
+      <div>
+        <div class="field-row">
+          <label>WEIGHT</label>
+          <div class="unit-toggle weight-unit-toggle">
+            <button type="button" class="unit-btn active" data-unit="kg">kg</button>
+            <button type="button" class="unit-btn" data-unit="lb">lb</button>
+          </div>
+        </div>
+        <div class="metric-field" id="weight-kg-field">
+          <input id="weight-kg-input" type="number" min="0" placeholder="65">
+        </div>
+        <div class="imperial-pair" id="weight-lb-field">
+          <input id="weight-lb-input" type="number" min="0" placeholder="lb">
         </div>
       </div>
       <div>
@@ -333,6 +365,28 @@ const resultEl = document.getElementById('result');
 const sizeResultEl = document.getElementById('size-result');
 const styleSectionEl = document.getElementById('style-section');
 const styleGridEl = document.getElementById('style-grid');
+
+/* ---------- Unit toggles (height/weight) ---------- */
+let heightUnit = 'cm';
+let weightUnit = 'kg';
+document.querySelectorAll('.height-unit-toggle .unit-btn').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.height-unit-toggle .unit-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    heightUnit = btn.dataset.unit;
+    document.getElementById('height-cm-field').classList.toggle('hidden', heightUnit !== 'cm');
+    document.getElementById('height-ftin-field').classList.toggle('active', heightUnit === 'ftin');
+  };
+});
+document.querySelectorAll('.weight-unit-toggle .unit-btn').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.weight-unit-toggle .unit-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    weightUnit = btn.dataset.unit;
+    document.getElementById('weight-kg-field').classList.toggle('hidden', weightUnit !== 'kg');
+    document.getElementById('weight-lb-field').classList.toggle('active', weightUnit === 'lb');
+  };
+});
 
 async function fetchLooks() {
   const res = await fetch(`${BACKEND_API_BASE}/api/v1/products`, {
@@ -471,8 +525,22 @@ document.getElementById('add-look-btn').onclick = async () => {
 /* ---------- Get recommendation flow ---------- */
 recommendBtn.onclick = async () => {
   const look = looks[activeLookIndex];
-  const height_cm = parseFloat(document.getElementById('height-input').value);
-  const weight_kg = parseFloat(document.getElementById('weight-input').value);
+
+  let height_cm, weight_kg;
+  if (heightUnit === 'cm') {
+    height_cm = parseFloat(document.getElementById('height-cm-input').value);
+  } else {
+    const ft = parseFloat(document.getElementById('height-ft-input').value) || 0;
+    const inches = parseFloat(document.getElementById('height-in-input').value) || 0;
+    height_cm = (ft * 12 + inches) * 2.54;
+  }
+  if (weightUnit === 'kg') {
+    weight_kg = parseFloat(document.getElementById('weight-kg-input').value);
+  } else {
+    const lb = parseFloat(document.getElementById('weight-lb-input').value);
+    weight_kg = lb * 0.453592;
+  }
+
   const fit_preference = document.getElementById('fit-input').value;
 
   resultEl.classList.remove('show');
