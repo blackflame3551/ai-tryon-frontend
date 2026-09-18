@@ -1,9 +1,9 @@
 /**
- * AI Fitting Room — embeddable virtual try-on widget
- * ---------------------------------------------------
+ * AI Personal Shopper — embeddable size & style widget
+ * -----------------------------------------------------
  * Drop this on any product page:
  *
- *   <div class="ai-tryon-widget"
+ *   <div class="ai-shopper-widget"
  *        data-backend="https://your-backend.up.railway.app"
  *        data-merchant-key="mch_live_xxx"
  *        data-product-id="prod_123"
@@ -14,10 +14,10 @@
  *   </div>
  *   <script src="https://your-cdn.com/widget.js" defer></script>
  *
- * data-product-category defaults to "apparel" if omitted. For jewelry,
- * use one of: "jewelry_necklace", "jewelry_bracelet", "jewelry_ring",
- * "jewelry_earrings" — these route to a specialized jewelry model instead
- * of the general apparel one.
+ * No photo is collected — just height, weight, and a fit preference.
+ * data-product-category is informational only (shown in analytics /
+ * used later if you split style-matching by category); it no longer
+ * routes to a specialized model the way it did for the try-on widget.
  *
  * data-lang is optional — auto-detected from the host page's <html lang="..">
  * if omitted. Falls back to English if the detected language isn't
@@ -25,7 +25,7 @@
  * Supported: en, es, fr, de, pt, it, ro, nl.
  *
  * Multiple widgets (e.g. a collection/listing page) work automatically —
- * every element with class "ai-tryon-widget" on the page gets its own
+ * every element with class "ai-shopper-widget" on the page gets its own
  * button + modal, each configured from its own data attributes.
  *
  * Styles are isolated in a Shadow DOM so the host store's CSS can't break
@@ -46,132 +46,100 @@
 
   const TRANSLATIONS = {
     en: {
-      tryItOn: "✨ Try It On", modalTitle: "See it on you",
-      modalSub: "Upload a photo and we'll show you wearing it.",
-      tabUpload: "Upload photo", tabUrl: "Paste URL",
-      dropzone: "📷 Drop a photo here, or click to choose",
-      urlPlaceholder: "https://example.com/your-photo.jpg",
-      submit: "Try it on", close: "Close",
-      statusUploading: "Uploading your photo…", statusSession: "Opening a session…",
-      statusQueue: "Sending it to the fitting room…", statusGenerating: "Generating your look…",
-      statusDone: "Done — here's the look.", statusFailedPrefix: "Failed: ",
-      statusPrefix: "Status: ", unknownError: "unknown error",
-      errChoosePhoto: "Choose a photo first.", errPasteUrl: "Paste a photo URL first.",
-      errUploadFailed: "Photo upload failed.", errSession: "Could not start a session.",
-      errQueue: "Could not queue the job.",
-      statusWords: { initiated: "initiated", queued: "queued", processing: "processing" }
+      trigger: "🧍 Find Your Size & Style", modalTitle: "Find your fit",
+      modalSub: "Answer two quick questions — no photo needed.",
+      heightLabel: "Height (cm)", weightLabel: "Weight (kg)", fitLabel: "Fit preference",
+      fitTight: "Tight", fitRegular: "Regular", fitLoose: "Loose",
+      submit: "Get my recommendation", close: "Close",
+      statusChecking: "Finding your size…",
+      sizePrefixHigh: "Your perfect size: ", sizePrefixLow: "Closest match: Size ",
+      sizeLowSuffix: " (approximate)", noChart: "This store hasn't set up sizing for this item yet.",
+      styleHeading: "Complete the look", errMissing: "Please enter both height and weight.",
+      errRequest: "Couldn't get a recommendation right now."
     },
     es: {
-      tryItOn: "✨ Pruébatelo", modalTitle: "Míratelo puesto",
-      modalSub: "Sube una foto y te mostraremos cómo te queda.",
-      tabUpload: "Subir foto", tabUrl: "Pegar URL",
-      dropzone: "📷 Arrastra una foto aquí, o haz clic para elegir",
-      urlPlaceholder: "https://ejemplo.com/tu-foto.jpg",
-      submit: "Probarlo", close: "Cerrar",
-      statusUploading: "Subiendo tu foto…", statusSession: "Abriendo sesión…",
-      statusQueue: "Enviando al probador…", statusGenerating: "Generando tu look…",
-      statusDone: "Listo — aquí está el resultado.", statusFailedPrefix: "Error: ",
-      statusPrefix: "Estado: ", unknownError: "error desconocido",
-      errChoosePhoto: "Elige una foto primero.", errPasteUrl: "Pega una URL de foto primero.",
-      errUploadFailed: "Error al subir la foto.", errSession: "No se pudo iniciar la sesión.",
-      errQueue: "No se pudo encolar el trabajo.",
-      statusWords: { initiated: "iniciado", queued: "en cola", processing: "procesando" }
+      trigger: "🧍 Encuentra tu talla y estilo", modalTitle: "Encuentra tu talla",
+      modalSub: "Responde dos preguntas rápidas — sin necesidad de foto.",
+      heightLabel: "Altura (cm)", weightLabel: "Peso (kg)", fitLabel: "Preferencia de ajuste",
+      fitTight: "Ajustado", fitRegular: "Regular", fitLoose: "Holgado",
+      submit: "Obtener mi recomendación", close: "Cerrar",
+      statusChecking: "Calculando tu talla…",
+      sizePrefixHigh: "Tu talla perfecta: ", sizePrefixLow: "La más cercana: Talla ",
+      sizeLowSuffix: " (aproximado)", noChart: "Esta tienda aún no configuró tallas para este artículo.",
+      styleHeading: "Completa el look", errMissing: "Ingresa tu altura y peso.",
+      errRequest: "No se pudo obtener una recomendación ahora."
     },
     fr: {
-      tryItOn: "✨ Essayer", modalTitle: "Voyez-le sur vous",
-      modalSub: "Téléchargez une photo et voyez le rendu sur vous.",
-      tabUpload: "Télécharger une photo", tabUrl: "Coller une URL",
-      dropzone: "📷 Déposez une photo ici, ou cliquez pour choisir",
-      urlPlaceholder: "https://exemple.com/votre-photo.jpg",
-      submit: "Essayer maintenant", close: "Fermer",
-      statusUploading: "Téléchargement de votre photo…", statusSession: "Ouverture de la session…",
-      statusQueue: "Envoi à la cabine d'essayage…", statusGenerating: "Génération de votre look…",
-      statusDone: "Terminé — voici le résultat.", statusFailedPrefix: "Échec : ",
-      statusPrefix: "Statut : ", unknownError: "erreur inconnue",
-      errChoosePhoto: "Choisissez d'abord une photo.", errPasteUrl: "Collez d'abord une URL de photo.",
-      errUploadFailed: "Échec du téléchargement de la photo.", errSession: "Impossible de démarrer la session.",
-      errQueue: "Impossible de mettre en file d'attente.",
-      statusWords: { initiated: "initié", queued: "en file d'attente", processing: "en cours" }
+      trigger: "🧍 Trouvez votre taille et style", modalTitle: "Trouvez votre taille",
+      modalSub: "Répondez à deux questions rapides — aucune photo requise.",
+      heightLabel: "Taille (cm)", weightLabel: "Poids (kg)", fitLabel: "Préférence de coupe",
+      fitTight: "Ajusté", fitRegular: "Normal", fitLoose: "Ample",
+      submit: "Obtenir ma recommandation", close: "Fermer",
+      statusChecking: "Calcul de votre taille…",
+      sizePrefixHigh: "Votre taille parfaite : ", sizePrefixLow: "Le plus proche : Taille ",
+      sizeLowSuffix: " (approximatif)", noChart: "Ce magasin n'a pas encore configuré les tailles pour cet article.",
+      styleHeading: "Complétez la tenue", errMissing: "Veuillez indiquer votre taille et votre poids.",
+      errRequest: "Impossible d'obtenir une recommandation pour le moment."
     },
     de: {
-      tryItOn: "✨ Anprobieren", modalTitle: "Sieh es an dir",
-      modalSub: "Lade ein Foto hoch und sieh, wie es an dir aussieht.",
-      tabUpload: "Foto hochladen", tabUrl: "URL einfügen",
-      dropzone: "📷 Foto hier ablegen oder klicken zum Auswählen",
-      urlPlaceholder: "https://beispiel.com/dein-foto.jpg",
-      submit: "Jetzt anprobieren", close: "Schließen",
-      statusUploading: "Foto wird hochgeladen…", statusSession: "Sitzung wird gestartet…",
-      statusQueue: "Wird an die Umkleide gesendet…", statusGenerating: "Dein Look wird erstellt…",
-      statusDone: "Fertig — hier ist das Ergebnis.", statusFailedPrefix: "Fehlgeschlagen: ",
-      statusPrefix: "Status: ", unknownError: "unbekannter Fehler",
-      errChoosePhoto: "Wähle zuerst ein Foto.", errPasteUrl: "Füge zuerst eine Foto-URL ein.",
-      errUploadFailed: "Foto-Upload fehlgeschlagen.", errSession: "Sitzung konnte nicht gestartet werden.",
-      errQueue: "Auftrag konnte nicht eingereiht werden.",
-      statusWords: { initiated: "gestartet", queued: "in Warteschlange", processing: "in Bearbeitung" }
+      trigger: "🧍 Größe & Stil finden", modalTitle: "Finde deine Größe",
+      modalSub: "Beantworte zwei kurze Fragen — kein Foto nötig.",
+      heightLabel: "Größe (cm)", weightLabel: "Gewicht (kg)", fitLabel: "Passform",
+      fitTight: "Eng", fitRegular: "Normal", fitLoose: "Locker",
+      submit: "Empfehlung erhalten", close: "Schließen",
+      statusChecking: "Deine Größe wird berechnet…",
+      sizePrefixHigh: "Deine perfekte Größe: ", sizePrefixLow: "Nächste Übereinstimmung: Größe ",
+      sizeLowSuffix: " (ungefähr)", noChart: "Dieser Shop hat für diesen Artikel noch keine Größentabelle hinterlegt.",
+      styleHeading: "Passend dazu", errMissing: "Bitte Größe und Gewicht angeben.",
+      errRequest: "Gerade keine Empfehlung möglich."
     },
     pt: {
-      tryItOn: "✨ Experimentar", modalTitle: "Veja em você",
-      modalSub: "Envie uma foto e mostramos como fica em você.",
-      tabUpload: "Enviar foto", tabUrl: "Colar URL",
-      dropzone: "📷 Solte uma foto aqui, ou clique para escolher",
-      urlPlaceholder: "https://exemplo.com/sua-foto.jpg",
-      submit: "Experimentar agora", close: "Fechar",
-      statusUploading: "Enviando sua foto…", statusSession: "Iniciando sessão…",
-      statusQueue: "Enviando ao provador…", statusGenerating: "Gerando seu look…",
-      statusDone: "Pronto — aqui está o resultado.", statusFailedPrefix: "Falhou: ",
-      statusPrefix: "Status: ", unknownError: "erro desconhecido",
-      errChoosePhoto: "Escolha uma foto primeiro.", errPasteUrl: "Cole uma URL de foto primeiro.",
-      errUploadFailed: "Falha ao enviar a foto.", errSession: "Não foi possível iniciar a sessão.",
-      errQueue: "Não foi possível enfileirar.",
-      statusWords: { initiated: "iniciado", queued: "na fila", processing: "processando" }
+      trigger: "🧍 Encontre seu tamanho e estilo", modalTitle: "Encontre seu tamanho",
+      modalSub: "Responda duas perguntas rápidas — sem necessidade de foto.",
+      heightLabel: "Altura (cm)", weightLabel: "Peso (kg)", fitLabel: "Preferência de caimento",
+      fitTight: "Justo", fitRegular: "Regular", fitLoose: "Solto",
+      submit: "Obter minha recomendação", close: "Fechar",
+      statusChecking: "Calculando seu tamanho…",
+      sizePrefixHigh: "Seu tamanho perfeito: ", sizePrefixLow: "Mais próximo: Tamanho ",
+      sizeLowSuffix: " (aproximado)", noChart: "Esta loja ainda não configurou tamanhos para este item.",
+      styleHeading: "Complete o look", errMissing: "Informe altura e peso.",
+      errRequest: "Não foi possível obter uma recomendação agora."
     },
     it: {
-      tryItOn: "✨ Provalo", modalTitle: "Guardalo su di te",
-      modalSub: "Carica una foto e ti mostriamo come ti sta.",
-      tabUpload: "Carica foto", tabUrl: "Incolla URL",
-      dropzone: "📷 Trascina una foto qui, o clicca per scegliere",
-      urlPlaceholder: "https://esempio.com/tua-foto.jpg",
-      submit: "Prova ora", close: "Chiudi",
-      statusUploading: "Caricamento della foto…", statusSession: "Apertura sessione…",
-      statusQueue: "Invio al camerino…", statusGenerating: "Generazione del look…",
-      statusDone: "Fatto — ecco il risultato.", statusFailedPrefix: "Non riuscito: ",
-      statusPrefix: "Stato: ", unknownError: "errore sconosciuto",
-      errChoosePhoto: "Scegli prima una foto.", errPasteUrl: "Incolla prima un URL foto.",
-      errUploadFailed: "Caricamento foto non riuscito.", errSession: "Impossibile avviare la sessione.",
-      errQueue: "Impossibile mettere in coda.",
-      statusWords: { initiated: "avviato", queued: "in coda", processing: "in elaborazione" }
+      trigger: "🧍 Trova taglia e stile", modalTitle: "Trova la tua taglia",
+      modalSub: "Rispondi a due semplici domande — nessuna foto necessaria.",
+      heightLabel: "Altezza (cm)", weightLabel: "Peso (kg)", fitLabel: "Preferenza di vestibilità",
+      fitTight: "Aderente", fitRegular: "Regolare", fitLoose: "Comoda",
+      submit: "Ottieni il mio consiglio", close: "Chiudi",
+      statusChecking: "Calcolo della taglia…",
+      sizePrefixHigh: "La tua taglia perfetta: ", sizePrefixLow: "Più vicina: Taglia ",
+      sizeLowSuffix: " (approssimativo)", noChart: "Questo negozio non ha ancora impostato le taglie per questo articolo.",
+      styleHeading: "Completa il look", errMissing: "Inserisci altezza e peso.",
+      errRequest: "Impossibile ottenere un consiglio al momento."
     },
     ro: {
-      tryItOn: "✨ Probează", modalTitle: "Vezi cum îți stă",
-      modalSub: "Încarcă o poză și îți arătăm cum arată pe tine.",
-      tabUpload: "Încarcă poză", tabUrl: "Lipește URL",
-      dropzone: "📷 Trage o poză aici, sau apasă pentru a alege",
-      urlPlaceholder: "https://exemplu.com/poza-ta.jpg",
-      submit: "Probează acum", close: "Închide",
-      statusUploading: "Se încarcă poza…", statusSession: "Se deschide sesiunea…",
-      statusQueue: "Se trimite la cabina de probă…", statusGenerating: "Se generează look-ul…",
-      statusDone: "Gata — iată rezultatul.", statusFailedPrefix: "Eșuat: ",
-      statusPrefix: "Stare: ", unknownError: "eroare necunoscută",
-      errChoosePhoto: "Alege mai întâi o poză.", errPasteUrl: "Lipește mai întâi un URL de poză.",
-      errUploadFailed: "Încărcarea pozei a eșuat.", errSession: "Sesiunea nu a putut fi pornită.",
-      errQueue: "Comanda nu a putut fi pusă în coadă.",
-      statusWords: { initiated: "inițiat", queued: "în așteptare", processing: "se procesează" }
+      trigger: "🧍 Găsește-ți mărimea și stilul", modalTitle: "Găsește-ți mărimea",
+      modalSub: "Răspunde la două întrebări rapide — fără poză.",
+      heightLabel: "Înălțime (cm)", weightLabel: "Greutate (kg)", fitLabel: "Preferință de fit",
+      fitTight: "Strâns", fitRegular: "Regular", fitLoose: "Larg",
+      submit: "Primește recomandarea", close: "Închide",
+      statusChecking: "Se calculează mărimea…",
+      sizePrefixHigh: "Mărimea ta perfectă: ", sizePrefixLow: "Cea mai apropiată: Mărimea ",
+      sizeLowSuffix: " (aproximativ)", noChart: "Acest magazin nu a configurat încă mărimile pentru acest articol.",
+      styleHeading: "Completează ținuta", errMissing: "Introdu înălțimea și greutatea.",
+      errRequest: "Nu s-a putut obține o recomandare acum."
     },
     nl: {
-      tryItOn: "✨ Pas het aan", modalTitle: "Bekijk het op jou",
-      modalSub: "Upload een foto en we laten zien hoe het je staat.",
-      tabUpload: "Foto uploaden", tabUrl: "URL plakken",
-      dropzone: "📷 Sleep hier een foto, of klik om te kiezen",
-      urlPlaceholder: "https://voorbeeld.com/jouw-foto.jpg",
-      submit: "Nu passen", close: "Sluiten",
-      statusUploading: "Foto wordt geüpload…", statusSession: "Sessie wordt gestart…",
-      statusQueue: "Wordt naar de paskamer gestuurd…", statusGenerating: "Jouw look wordt gemaakt…",
-      statusDone: "Klaar — hier is het resultaat.", statusFailedPrefix: "Mislukt: ",
-      statusPrefix: "Status: ", unknownError: "onbekende fout",
-      errChoosePhoto: "Kies eerst een foto.", errPasteUrl: "Plak eerst een foto-URL.",
-      errUploadFailed: "Foto uploaden mislukt.", errSession: "Sessie kon niet worden gestart.",
-      errQueue: "Taak kon niet in wachtrij worden gezet.",
-      statusWords: { initiated: "gestart", queued: "in wachtrij", processing: "wordt verwerkt" }
+      trigger: "🧍 Vind je maat & stijl", modalTitle: "Vind je maat",
+      modalSub: "Beantwoord twee korte vragen — geen foto nodig.",
+      heightLabel: "Lengte (cm)", weightLabel: "Gewicht (kg)", fitLabel: "Pasvoorkeur",
+      fitTight: "Strak", fitRegular: "Normaal", fitLoose: "Los",
+      submit: "Krijg mijn aanbeveling", close: "Sluiten",
+      statusChecking: "Je maat wordt berekend…",
+      sizePrefixHigh: "Jouw perfecte maat: ", sizePrefixLow: "Dichtstbijzijnde match: Maat ",
+      sizeLowSuffix: " (bij benadering)", noChart: "Deze winkel heeft nog geen maattabel ingesteld voor dit item.",
+      styleHeading: "Maak de look compleet", errMissing: "Vul lengte en gewicht in.",
+      errRequest: "Kan nu geen aanbeveling ophalen."
     }
   };
 
@@ -215,66 +183,29 @@
     }
     .close-btn:hover { background: ${PANEL}; color: ${TEXT}; }
 
-    .modal h2 {
-      font-size: 17px; font-weight: 600; margin: 0 0 4px; padding-right: 24px;
-    }
+    .modal h2 { font-size: 17px; font-weight: 600; margin: 0 0 4px; padding-right: 24px; }
     .modal .sub { color: ${DIM}; font-size: 12.5px; margin: 0 0 16px; }
 
-    .mirror {
-      border: 1px solid ${GOLD_DIM}; border-radius: 12px; padding: 8px;
-      background: ${PANEL}; margin-bottom: 14px;
+    .product-strip { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .product-strip img {
+      width: 48px; height: 48px; object-fit: cover; border-radius: 8px;
+      border: 1px solid ${BORDER}; flex-shrink: 0;
     }
-    .mirror-frame {
-      position: relative; border-radius: 8px; overflow: hidden;
-      background: #000; aspect-ratio: 3/4;
-    }
-    .mirror-frame img { width: 100%; height: 100%; object-fit: contain; display: block; }
-    .scan-line {
-      position: absolute; left: 0; right: 0; top: 0; height: 2px;
-      background: linear-gradient(90deg, transparent, ${GOLD}, transparent);
-      opacity: 0; pointer-events: none;
-    }
-    .mirror-frame.scanning .scan-line { opacity: 1; animation: scan 1.8s linear infinite; }
-    @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
-    @media (prefers-reduced-motion: reduce) {
-      .mirror-frame.scanning .scan-line { animation: none; opacity: .5; top: 50%; }
-    }
+    .product-strip .name { font-size: 13px; font-weight: 500; }
+    .product-strip .price { font-size: 12.5px; color: ${GOLD}; }
 
-    .product-caption { display: flex; justify-content: space-between; padding: 10px 4px 2px; }
-    .product-caption .name { font-size: 13px; font-weight: 500; }
-    .product-caption .price { font-size: 12.5px; color: ${GOLD}; }
-
-    .tabs { display: flex; gap: 6px; margin-bottom: 10px; }
-    .tab {
-      flex: 1; padding: 8px; text-align: center; font-size: 11.5px;
-      text-transform: uppercase; letter-spacing: .04em; color: ${DIM};
-      border: 1px solid ${BORDER}; border-radius: 8px; cursor: pointer; background: transparent;
-    }
-    .tab.active { border-color: ${GOLD}; color: ${GOLD}; }
-    .pane { display: none; }
-    .pane.active { display: block; }
-
-    .dropzone {
-      border: 1px dashed ${BORDER}; border-radius: 10px; padding: 16px;
-      text-align: center; cursor: pointer; font-size: 12.5px; color: ${DIM};
-    }
-    .dropzone:hover, .dropzone.drag { border-color: ${GOLD}; color: ${TEXT}; }
-    .dropzone input { display: none; }
-    .preview-thumb {
-      margin-top: 8px; width: 100%; max-height: 120px; object-fit: cover;
-      border-radius: 8px; display: none;
-    }
-
-    input[type=text] {
+    label { display: block; font-size: 12px; color: ${DIM}; margin: 12px 0 4px; }
+    label:first-of-type { margin-top: 0; }
+    input[type=number], select {
       width: 100%; background: ${PANEL}; border: 1px solid ${BORDER}; color: ${TEXT};
       border-radius: 8px; padding: 10px; font-size: 13px; font-family: inherit;
     }
-    input[type=text]:focus { outline: 2px solid ${GOLD}; outline-offset: 1px; }
+    input[type=number]:focus, select:focus { outline: 2px solid ${GOLD}; outline-offset: 1px; }
 
     .submit-btn {
       width: 100%; background: ${GOLD}; color: #161116; border: none;
       padding: 13px; border-radius: 999px; font-weight: 600; font-size: 13.5px;
-      cursor: pointer; margin-top: 12px;
+      cursor: pointer; margin-top: 16px;
     }
     .submit-btn:hover { background: #B08F4F; }
     .submit-btn:disabled { opacity: .5; cursor: not-allowed; }
@@ -287,6 +218,23 @@
     .status.ok { border-color: ${SUCCESS}; color: ${SUCCESS}; }
     .status.err { border-color: ${RUST}; color: ${RUST}; }
     .status.pending { border-color: ${GOLD_DIM}; color: ${GOLD}; }
+
+    .result { display: none; margin-top: 14px; }
+    .result.show { display: block; }
+    .result .size-line {
+      padding: 12px; border-radius: 8px; font-size: 13.5px; font-weight: 600;
+      border: 1px solid ${SUCCESS}; color: ${SUCCESS}; text-align: center;
+    }
+    .result .size-line.low { border-color: ${GOLD_DIM}; color: ${GOLD}; }
+    .style-heading {
+      font-size: 11px; text-transform: uppercase; letter-spacing: .06em;
+      color: ${DIM}; margin: 16px 0 8px;
+    }
+    .style-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .style-item { border: 1px solid ${BORDER}; border-radius: 8px; overflow: hidden; }
+    .style-item img { width: 100%; height: 90px; object-fit: cover; display: block; }
+    .style-item p { font-size: 11px; margin: 6px; color: ${TEXT}; }
+    .style-item .price { color: ${GOLD}; }
   `;
 
   function initWidget(container) {
@@ -296,10 +244,9 @@
     const productName = container.dataset.productName || "This item";
     const productPrice = container.dataset.productPrice || "";
     const productImage = container.dataset.productImage;
-    const productCategory = container.dataset.productCategory || "apparel";
 
-    if (!backend || !merchantKey || !productImage) {
-      console.error("[ai-tryon-widget] missing required data-backend / data-merchant-key / data-product-image on", container);
+    if (!backend || !merchantKey || !productId) {
+      console.error("[ai-shopper-widget] missing required data-backend / data-merchant-key / data-product-id on", container);
       return;
     }
 
@@ -315,18 +262,14 @@
     const trigger = document.createElement("button");
     trigger.className = "trigger";
     trigger.type = "button";
-    trigger.textContent = t.tryItOn;
+    trigger.textContent = t.trigger;
     triggerRoot.appendChild(trigger);
 
-    // ---- Modal: appended directly to <body>, NOT nested inside the page's
-    // own layout. This matters — if the trigger button's location has any
-    // CSS `transform` on an ancestor (common in theme animations/sliders),
-    // `position: fixed` inside it stops meaning "relative to the screen"
-    // and instead traps the modal relative to that ancestor, making it
-    // appear tiny and off to one side instead of centered. Living on
-    // <body> directly sidesteps that entirely. ----
+    // ---- Modal: appended directly to <body>, not nested in the page's own
+    // layout, so an ancestor's CSS transform can't trap `position: fixed`
+    // and shrink/misplace the modal (same reasoning as the old widget). ----
     const modalHost = document.createElement("div");
-    modalHost.className = "ai-tryon-modal-host";
+    modalHost.className = "ai-shopper-modal-host";
     modalHost.style.display = "block"; // :host{all:initial} resets this to inline by default, collapsing the box to 0x0
     document.body.appendChild(modalHost);
     const modalRoot = modalHost.attachShadow({ mode: "open" });
@@ -343,35 +286,37 @@
           <h2>${t.modalTitle}</h2>
           <p class="sub">${t.modalSub}</p>
 
-          <div class="mirror">
-            <div class="mirror-frame">
-              <div class="scan-line"></div>
-              <img class="result-img" src="${productImage}" alt="${productName}">
+          <div class="product-strip">
+            ${productImage ? `<img src="${productImage}" alt="${productName}">` : ""}
+            <div>
+              <div class="name">${productName}</div>
+              <div class="price">${productPrice}</div>
             </div>
           </div>
-          <div class="product-caption">
-            <span class="name">${productName}</span>
-            <span class="price">${productPrice}</span>
-          </div>
 
-          <div class="tabs">
-            <button class="tab active" type="button" data-tab="file">${t.tabUpload}</button>
-            <button class="tab" type="button" data-tab="url">${t.tabUrl}</button>
-          </div>
+          <label>${t.heightLabel}</label>
+          <input type="number" class="height-input" min="0" placeholder="170">
 
-          <div class="pane active" data-pane="file">
-            <label class="dropzone">
-              ${t.dropzone}
-              <input type="file" accept="image/png,image/jpeg,image/webp">
-            </label>
-            <img class="preview-thumb" alt="">
-          </div>
-          <div class="pane" data-pane="url">
-            <input type="text" class="user-photo-url" placeholder="${t.urlPlaceholder}">
-          </div>
+          <label>${t.weightLabel}</label>
+          <input type="number" class="weight-input" min="0" placeholder="65">
+
+          <label>${t.fitLabel}</label>
+          <select class="fit-input">
+            <option value="tight">${t.fitTight}</option>
+            <option value="regular" selected>${t.fitRegular}</option>
+            <option value="loose">${t.fitLoose}</option>
+          </select>
 
           <button class="submit-btn" type="button">${t.submit}</button>
           <div class="status"></div>
+
+          <div class="result">
+            <div class="size-line"></div>
+            <div class="style-section" style="display:none;">
+              <div class="style-heading">${t.styleHeading}</div>
+              <div class="style-grid"></div>
+            </div>
+          </div>
         </div>
       </div>
     `;
@@ -380,75 +325,23 @@
     // ---- element refs ----
     const overlay = wrap.querySelector(".overlay");
     const closeBtn = wrap.querySelector(".close-btn");
-    const resultImg = wrap.querySelector(".result-img");
-    const mirrorFrame = wrap.querySelector(".mirror-frame");
-    const tabs = wrap.querySelectorAll(".tab");
-    const panes = wrap.querySelectorAll(".pane");
-    const dropzone = wrap.querySelector(".dropzone");
-    const fileInput = wrap.querySelector('input[type=file]');
-    const previewThumb = wrap.querySelector(".preview-thumb");
-    const urlInput = wrap.querySelector(".user-photo-url");
+    const heightInput = wrap.querySelector(".height-input");
+    const weightInput = wrap.querySelector(".weight-input");
+    const fitInput = wrap.querySelector(".fit-input");
     const submitBtn = wrap.querySelector(".submit-btn");
     const statusEl = wrap.querySelector(".status");
-
-    let activePollInterval = null;
+    const resultEl = wrap.querySelector(".result");
+    const sizeLineEl = wrap.querySelector(".size-line");
+    const styleSectionEl = wrap.querySelector(".style-section");
+    const styleGridEl = wrap.querySelector(".style-grid");
 
     function closeModal() {
       overlay.classList.remove("open");
-      if (activePollInterval) {
-        clearInterval(activePollInterval);
-        activePollInterval = null;
-      }
-      // Reset everything so the next open starts fresh, not showing
-      // last time's photo, result, or status message.
-      resultImg.src = productImage;
-      mirrorFrame.classList.remove("scanning");
-      fileInput.value = "";
-      previewThumb.src = "";
-      previewThumb.style.display = "none";
-      urlInput.value = "";
-      tabs.forEach(t => t.classList.remove("active"));
-      panes.forEach(p => p.classList.remove("active"));
-      wrap.querySelector('.tab[data-tab="file"]').classList.add("active");
-      wrap.querySelector('.pane[data-pane="file"]').classList.add("active");
-      statusEl.className = "status";
-      statusEl.textContent = "";
-      submitBtn.disabled = false;
     }
 
     trigger.onclick = () => overlay.classList.add("open");
     closeBtn.onclick = closeModal;
     overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
-
-    tabs.forEach(tab => {
-      tab.onclick = () => {
-        tabs.forEach(t => t.classList.remove("active"));
-        panes.forEach(p => p.classList.remove("active"));
-        tab.classList.add("active");
-        wrap.querySelector(`[data-pane="${tab.dataset.tab}"]`).classList.add("active");
-      };
-    });
-
-    ["dragover", "dragenter"].forEach(evt =>
-      dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add("drag"); })
-    );
-    ["dragleave", "drop"].forEach(evt =>
-      dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.remove("drag"); })
-    );
-    dropzone.addEventListener("drop", e => {
-      if (e.dataTransfer.files[0]) {
-        fileInput.files = e.dataTransfer.files;
-        fileInput.dispatchEvent(new Event("change"));
-      }
-    });
-    fileInput.addEventListener("change", () => {
-      const file = fileInput.files[0];
-      if (file) {
-        previewThumb.src = URL.createObjectURL(file);
-        previewThumb.style.display = "block";
-        urlInput.value = "";
-      }
-    });
 
     function setStatus(text, kind) {
       statusEl.className = "status show" + (kind ? " " + kind : "");
@@ -459,101 +352,68 @@
       statusEl.textContent = "";
     }
 
-    async function uploadImage(file) {
-      const formData = new FormData();
-      formData.append("file", file);
-      const res = await fetch(`${backend}/api/v1/tryon/upload-photo`, {
-        method: "POST",
-        headers: { "X-Merchant-API-Key": merchantKey },
-        body: formData
-      });
-      if (!res.ok) throw new Error(t.errUploadFailed);
-      const data = await res.json();
-      return data.imageUrl;
-    }
-
-    async function resolveUserPhotoUrl() {
-      const activeTab = wrap.querySelector(".tab.active").dataset.tab;
-      if (activeTab === "file") {
-        if (!fileInput.files[0]) throw new Error(t.errChoosePhoto);
-        return await uploadImage(fileInput.files[0]);
-      }
-      const url = urlInput.value.trim();
-      if (!url) throw new Error(t.errPasteUrl);
-      return url;
-    }
-
     submitBtn.onclick = async () => {
-      submitBtn.disabled = true;
+      const height_cm = parseFloat(heightInput.value);
+      const weight_kg = parseFloat(weightInput.value);
+      const fit_preference = fitInput.value;
+
+      resultEl.classList.remove("show");
       resetStatus();
-      setStatus(t.statusUploading, "pending");
+
+      if (!height_cm || !weight_kg) {
+        setStatus(t.errMissing, "err");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      setStatus(t.statusChecking, "pending");
 
       try {
-        const userImageUrl = await resolveUserPhotoUrl();
-
-        setStatus(t.statusSession, "pending");
-        const initRes = await fetch(`${backend}/api/v1/tryon/init`, {
+        const res = await fetch(`${backend}/api/v1/personal-shopper`, {
           method: "POST",
           headers: { "X-Merchant-API-Key": merchantKey, "Content-Type": "application/json" },
-          body: JSON.stringify({ garmentId: productId, category: productCategory })
+          body: JSON.stringify({ product_id: productId, height_cm, weight_kg, fit_preference })
         });
-        if (!initRes.ok) throw new Error(t.errSession);
-        const { sessionId } = await initRes.json();
+        if (!res.ok) throw new Error(t.errRequest);
+        const data = await res.json();
 
-        setStatus(t.statusQueue, "pending");
-        const processRes = await fetch(`${backend}/api/v1/tryon/process`, {
-          method: "POST",
-          headers: { "X-Merchant-API-Key": merchantKey, "Content-Type": "application/json" },
-          body: JSON.stringify({ sessionId, garmentImageUrl: productImage, userImageUrl })
-        });
-        if (!processRes.ok) throw new Error(t.errQueue);
+        resetStatus();
 
-        mirrorFrame.classList.add("scanning");
-        setStatus(t.statusGenerating, "pending");
-        pollStatus(sessionId);
+        if (data.recommended_size) {
+          sizeLineEl.className = "size-line" + (data.size_confidence === "low" ? " low" : "");
+          sizeLineEl.textContent = data.size_confidence === "low"
+            ? t.sizePrefixLow + data.recommended_size + t.sizeLowSuffix
+            : t.sizePrefixHigh + data.recommended_size;
+        } else {
+          sizeLineEl.className = "size-line low";
+          sizeLineEl.textContent = t.noChart;
+        }
 
+        if (data.style_matches && data.style_matches.length) {
+          styleGridEl.innerHTML = data.style_matches.map(m => `
+            <div class="style-item">
+              <img src="${m.image}" alt="${m.name}">
+              <p>${m.name}<br><span class="price">${m.price || ""}</span></p>
+            </div>
+          `).join("");
+          styleSectionEl.style.display = "block";
+        } else {
+          styleSectionEl.style.display = "none";
+        }
+
+        resultEl.classList.add("show");
       } catch (err) {
         setStatus(err.message, "err");
+      } finally {
         submitBtn.disabled = false;
       }
     };
-
-    function pollStatus(sessionId) {
-      activePollInterval = setInterval(async () => {
-        try {
-          const res = await fetch(`${backend}/api/v1/tryon/status/${sessionId}`, {
-            headers: { "X-Merchant-API-Key": merchantKey }
-          });
-          const data = await res.json();
-
-          if (data.status === "completed") {
-            clearInterval(activePollInterval);
-            activePollInterval = null;
-            mirrorFrame.classList.remove("scanning");
-            resultImg.src = data.resultImageUrl;
-            setStatus(t.statusDone, "ok");
-            submitBtn.disabled = false;
-          } else if (data.status === "failed") {
-            clearInterval(activePollInterval);
-            activePollInterval = null;
-            mirrorFrame.classList.remove("scanning");
-            setStatus(t.statusFailedPrefix + (data.errorReason || t.unknownError), "err");
-            submitBtn.disabled = false;
-          } else {
-            const word = t.statusWords[data.status] || data.status;
-            setStatus(t.statusPrefix + word + "…", "pending");
-          }
-        } catch (e) {
-          // transient network hiccup while polling — keep trying silently
-        }
-      }, 3000);
-    }
   }
 
   function init() {
-    document.querySelectorAll(".ai-tryon-widget").forEach(el => {
-      if (el.dataset.tryonInitialized) return;
-      el.dataset.tryonInitialized = "true";
+    document.querySelectorAll(".ai-shopper-widget").forEach(el => {
+      if (el.dataset.shopperInitialized) return;
+      el.dataset.shopperInitialized = "true";
       initWidget(el);
     });
   }
@@ -565,7 +425,7 @@
   }
 
   // Exposed so pages that swap products dynamically (e.g. a product
-  // carousel) can re-scan for newly-added .ai-tryon-widget elements
+  // carousel) can re-scan for newly-added .ai-shopper-widget elements
   // without needing a full page reload.
-  window.reinitAiTryonWidgets = init;
+  window.reinitAiShopperWidgets = init;
 })();

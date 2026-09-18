@@ -45,7 +45,7 @@
 <script src="./widget.js" defer></script>
 <script>
 /* ============ CONFIG — same values as your main demo site ============ */
-const BACKEND_API_BASE = "https://ai-tryon-backend-production-408b.up.railway.app";
+const BACKEND_API_BASE = "https://ai-personal-shopper-backend-production.up.railway.app";
 const MERCHANT_KEY = "mch_live_test_789";
 /* ======================================================================== */
 
@@ -59,12 +59,12 @@ const nextBtn = document.getElementById('next-btn');
 
 async function loadProducts() {
   try {
-    const res = await fetch(`${BACKEND_API_BASE}/api/v1/tryon/looks`, {
+    const res = await fetch(`${BACKEND_API_BASE}/api/v1/products`, {
       headers: { 'X-Merchant-API-Key': MERCHANT_KEY }
     });
     if (!res.ok) throw new Error('Could not load products.');
     const data = await res.json();
-    products = data.looks;
+    products = data.products;
     if (products.length === 0) {
       productCard.innerHTML = '<div class="error">No products saved yet — add some on your main demo site first.</div>';
       counter.textContent = '';
@@ -88,7 +88,7 @@ function renderProduct(index) {
     <img src="${p.image}" alt="${p.name}">
     <h1>${p.name}</h1>
     <p class="price">${p.price || ''}</p>
-    <div class="ai-tryon-widget"
+    <div class="ai-shopper-widget"
          data-backend="${BACKEND_API_BASE}"
          data-merchant-key="${MERCHANT_KEY}"
          data-product-id="${p.id}"
@@ -100,9 +100,9 @@ function renderProduct(index) {
   `;
 
   // widget.js only auto-initializes elements present when the page first
-  // loads — since we just injected a brand-new .ai-tryon-widget div, ask
+  // loads — since we just injected a brand-new .ai-shopper-widget div, ask
   // it to re-scan and wire up this one too.
-  if (window.reinitAiTryonWidgets) window.reinitAiTryonWidgets();
+  if (window.reinitAiShopperWidgets) window.reinitAiShopperWidgets();
 }
 
 prevBtn.onclick = () => { if (currentIndex > 0) renderProduct(currentIndex - 1); };

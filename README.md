@@ -1,4 +1,4 @@
-# Fitting Room — demo frontend
+# Personal Shopper — demo frontend
 
 Static site, no build step. Deploys as-is.
 
@@ -6,7 +6,7 @@ Static site, no build step. Deploys as-is.
 Open `index.html` and edit the top of the `<script>` block:
 
 ```js
-const BACKEND_API_BASE = "https://ai-tryon-backend-production.up.railway.app";
+const BACKEND_API_BASE = "https://ai-personal-shopper-backend-production.up.railway.app";
 const MERCHANT_KEY = "mch_live_test_789";
 ```
 
@@ -23,19 +23,26 @@ whichever merchant document you want this demo to authenticate as.
 Use "+ Add a product" in the lookbook rail:
 - Paste the product name and price
 - Paste the product photo's URL (right-click the image on the store page →
-  "Copy image address"), or use "Upload image instead" if you've saved the
-  photo locally
+  "Copy image address")
+- Optionally add a size chart: `S:45-55, M:55-65, L:65-80` (label + a
+  weight range in kg, comma-separated). Leave it blank for products with
+  no sizes — the widget will just skip the size half and show style
+  matches only.
 
-The new look is added to the catalog immediately and can be tried on right
-away — no code changes needed mid-demo.
+The new product is added to the catalog immediately, and once its image
+finishes embedding in the background (usually a few seconds), it'll start
+showing up as a style match for other products too.
 
 ---
 
 ## Embeddable widget (`widget.js`)
 
-This same folder also contains `widget.js` — a "✨ Try It On" button that
-gets embedded on a real store's product page (Shopify, WooCommerce, etc.),
-not just this demo page. Once deployed, it's publicly reachable at:
+This same folder also contains `widget.js` — a "🧍 Find Your Size & Style"
+button that gets embedded on a real store's product page (Shopify,
+WooCommerce, etc.), not just this demo page. No photo upload — it asks for
+height, weight, and a fit preference, then returns a size recommendation
+plus a small grid of matching products from the same store. Once deployed,
+it's publicly reachable at:
 
 ```
 https://YOUR-SITE-NAME.netlify.app/widget.js
@@ -45,8 +52,8 @@ To install it on a store's product page, paste this (filling in the real
 backend URL, merchant key, and Netlify URL above):
 
 ```html
-<div class="ai-tryon-widget"
-     data-backend="https://ai-tryon-backend-production.up.railway.app"
+<div class="ai-shopper-widget"
+     data-backend="https://ai-personal-shopper-backend-production.up.railway.app"
      data-merchant-key="mch_live_test_789"
      data-product-id="{{ product.id }}"
      data-product-name="{{ product.title }}"
@@ -66,4 +73,3 @@ widget before installing it on a real site:
 python -m http.server 8000
 ```
 then open `http://localhost:8000/example-product-page.html`.
-

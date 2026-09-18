@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fitting Room — AI Virtual Try-On</title>
+<title>Personal Shopper — AI Size & Style</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,12 +37,8 @@
     padding:22px 32px;border-bottom:1px solid var(--border);
     gap:12px;flex-wrap:wrap;
   }
-  @media (max-width:480px){
-    header{padding:16px 18px;}
-  }
-  .wordmark{
-    font-family:'Fraunces',serif;font-size:20px;letter-spacing:0.02em;
-  }
+  @media (max-width:480px){ header{padding:16px 18px;} }
+  .wordmark{ font-family:'Fraunces',serif;font-size:20px;letter-spacing:0.02em; }
   @media (max-width:480px){ .wordmark{font-size:17px;} }
   .wordmark span{color:var(--gold);font-style:italic;}
   .brand{display:flex;align-items:center;gap:10px;}
@@ -56,34 +52,24 @@
 
   /* ---------- Layout ---------- */
   main{
-    display:grid;
-    grid-template-columns:300px 1fr;
-    gap:0;
-    min-height:calc(100vh - 73px);
-    max-width:1400px;
-    margin:0 auto;
+    display:grid;grid-template-columns:300px 1fr;gap:0;
+    min-height:calc(100vh - 73px);max-width:1400px;margin:0 auto;
   }
-  @media (max-width:860px){
-    main{grid-template-columns:1fr;}
-  }
+  @media (max-width:860px){ main{grid-template-columns:1fr;} }
 
   /* ---------- Catalog rail ---------- */
   .catalog{
-    border-right:1px solid var(--border);
-    padding:24px 20px;
+    border-right:1px solid var(--border);padding:24px 20px;
     display:flex;flex-direction:column;gap:14px;
   }
   @media (max-width:860px){
-    .catalog{
-      border-right:none;border-bottom:1px solid var(--border);
-      flex-direction:row;overflow-x:auto;padding:18px 16px;
-      -webkit-overflow-scrolling:touch;
-    }
+    .catalog{ border-right:none;border-bottom:1px solid var(--border);
+      flex-direction:row;overflow-x:auto;padding:18px 16px; -webkit-overflow-scrolling:touch; }
   }
   @media (max-width:480px){
     .catalog{padding:14px 12px;gap:10px;}
     .look-card{min-width:180px;padding:8px;}
-    .add-look{min-width:180px;padding:12px;}
+    .add-look{min-width:220px;padding:12px;}
   }
   .catalog-title{
     font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;
@@ -91,32 +77,20 @@
   }
   .look-card{
     background:var(--panel);border:1px solid var(--border);border-radius:10px;
-    padding:10px;cursor:pointer;text-align:left;
-    display:flex;gap:12px;align-items:center;
-    transition:border-color .15s ease, transform .15s ease;
-    min-width:220px;flex-shrink:0;
+    padding:10px;cursor:pointer;text-align:left;display:flex;gap:12px;align-items:center;
+    transition:border-color .15s ease; min-width:220px;flex-shrink:0;position:relative;
   }
   .look-card:hover{border-color:var(--gold-dim);}
   .look-card.active{border-color:var(--gold);background:var(--panel-2);}
-  .look-card img{
-    width:46px;height:46px;object-fit:cover;border-radius:6px;
-    background:#0000;flex-shrink:0;
-  }
+  .look-card img{width:46px;height:46px;object-fit:cover;border-radius:6px;flex-shrink:0;}
   .look-meta{overflow:hidden;}
-  .look-eyebrow{
-    font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gold);
-    letter-spacing:0.1em;
-  }
-  .look-name{
-    font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  }
+  .look-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:0.1em;}
+  .look-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .look-price{font-size:12px;color:var(--dim);}
-  .look-card{position:relative;}
   .look-remove{
-    position:absolute;top:6px;right:6px;width:18px;height:18px;
-    border-radius:50%;border:1px solid var(--border);background:var(--bg);
-    color:var(--dim);font-size:11px;line-height:1;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;padding:0;
+    position:absolute;top:6px;right:6px;width:18px;height:18px;border-radius:50%;
+    border:1px solid var(--border);background:var(--bg);color:var(--dim);font-size:11px;
+    line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;
   }
   .look-remove:hover{border-color:var(--rust);color:var(--rust);}
 
@@ -125,27 +99,23 @@
     display:flex;flex-direction:column;gap:8px;min-width:220px;flex-shrink:0;
   }
   .add-look-title{font-size:12px;color:var(--dim);font-family:'IBM Plex Mono',monospace;letter-spacing:.08em;}
-  .add-look input{
+  .add-look input, .add-look select, .add-look textarea{
     background:var(--bg);border:1px solid var(--border);color:var(--text);
-    border-radius:6px;padding:10px;font-size:16px;font-family:'Inter';width:100%;
+    border-radius:6px;padding:10px;font-size:14px;font-family:'Inter';width:100%;
   }
-  .add-look input:focus{outline:2px solid var(--gold);outline-offset:1px;}
+  .add-look input:focus, .add-look textarea:focus{outline:2px solid var(--gold);outline-offset:1px;}
   .add-look .row{display:flex;gap:6px;}
   .add-look .row input{flex:1;min-width:0;}
+  .add-look .hint{font-size:10.5px;color:var(--dim);line-height:1.4;}
   .btn-mini{
     background:transparent;border:1px solid var(--gold-dim);color:var(--gold);
     border-radius:6px;padding:8px;font-size:11px;font-family:'IBM Plex Mono',monospace;
     letter-spacing:.06em;cursor:pointer;text-transform:uppercase;
   }
   .btn-mini:hover{background:rgba(198,166,100,.08);}
-  .add-look-filename{font-size:11px;color:var(--dim);min-height:14px;}
 
-  /* ---------- Fitting room ---------- */
-  .room{
-    padding:40px 48px;
-    display:flex;flex-direction:column;align-items:center;
-    gap:28px;
-  }
+  /* ---------- Shopper panel ---------- */
+  .room{ padding:40px 48px;display:flex;flex-direction:column;align-items:center;gap:28px; }
   @media (max-width:860px){ .room{padding:28px 18px;} }
   @media (max-width:480px){ .room{padding:20px 14px;gap:22px;} }
 
@@ -156,93 +126,38 @@
   }
   .room-header p{color:var(--dim);font-size:14px;margin:0;}
 
-  .mirror-wrap{
-    position:relative;width:100%;max-width:420px;
-  }
+  .mirror-wrap{position:relative;width:100%;max-width:420px;}
   .mirror-tag{
     position:absolute;left:-34px;top:50%;transform:translateY(-50%) rotate(-90deg);
     font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.18em;
     color:var(--gold);text-transform:uppercase;white-space:nowrap;
   }
   @media (max-width:520px){ .mirror-tag{display:none;} }
-
   .mirror{
-    position:relative;
-    border:1px solid var(--gold-dim);
-    border-radius:14px;
-    padding:10px;
-    background:var(--panel);
-    overflow:hidden;
+    position:relative;border:1px solid var(--gold-dim);border-radius:14px;
+    padding:10px;background:var(--panel);overflow:hidden;
   }
   .mirror::before,.mirror::after{
-    content:"";position:absolute;width:16px;height:16px;
-    border:1px solid var(--gold);opacity:.6;
+    content:"";position:absolute;width:16px;height:16px;border:1px solid var(--gold);opacity:.6;
   }
   .mirror::before{top:6px;left:6px;border-right:none;border-bottom:none;}
   .mirror::after{bottom:6px;right:6px;border-left:none;border-top:none;}
-  .mirror-frame{
-    position:relative;border-radius:8px;overflow:hidden;background:#000;
-    aspect-ratio:3/4;
-  }
-  .mirror-frame img{
-    width:100%;height:100%;object-fit:contain;display:block;
-    transition:opacity .3s ease;
-  }
-  .scan-line{
-    position:absolute;left:0;right:0;top:0;height:2px;
-    background:linear-gradient(90deg,transparent,var(--gold),transparent);
-    opacity:0;pointer-events:none;
-  }
-  .mirror-frame.scanning .scan-line{
-    opacity:1;animation:scan 1.8s linear infinite;
-  }
-  @keyframes scan{
-    0%{top:0%;}
-    100%{top:100%;}
-  }
-  @media (prefers-reduced-motion:reduce){
-    .mirror-frame.scanning .scan-line{animation:none;opacity:.5;top:50%;}
-  }
-
-  .mirror-caption{
-    display:flex;justify-content:space-between;align-items:baseline;
-    padding:12px 6px 4px;
-  }
+  .mirror-frame{ position:relative;border-radius:8px;overflow:hidden;background:#000;aspect-ratio:3/4; }
+  .mirror-frame img{ width:100%;height:100%;object-fit:contain;display:block; }
+  .mirror-caption{ display:flex;justify-content:space-between;align-items:baseline;padding:12px 6px 4px; }
   .mirror-caption .name{font-size:14px;font-weight:500;}
   .mirror-caption .price{font-size:13px;color:var(--gold);font-family:'IBM Plex Mono',monospace;}
 
   /* ---------- Controls ---------- */
   .controls{width:100%;max-width:420px;display:flex;flex-direction:column;gap:12px;}
-
-  .upload-tabs{display:flex;gap:6px;}
-  .upload-tab{
-    flex:1;padding:12px 9px;text-align:center;font-size:12px;font-family:'IBM Plex Mono',monospace;
-    letter-spacing:.06em;text-transform:uppercase;color:var(--dim);
-    border:1px solid var(--border);border-radius:8px;cursor:pointer;background:transparent;
-    min-height:44px;
-  }
-  .upload-tab.active{border-color:var(--gold);color:var(--gold);}
-
-  .upload-pane{display:none;}
-  .upload-pane.active{display:block;}
-
-  .dropzone{
-    border:1px dashed var(--border);border-radius:10px;padding:20px;
-    text-align:center;cursor:pointer;font-size:13px;color:var(--dim);
-    transition:border-color .15s ease;
-  }
-  .dropzone:hover,.dropzone.drag{border-color:var(--gold);color:var(--text);}
-  .dropzone input{display:none;}
-  .preview-thumb{
-    margin-top:10px;width:100%;max-height:160px;object-fit:cover;
-    border-radius:8px;display:none;
-  }
-
-  .controls input[type=text]{
+  .controls label{ font-size:12px;color:var(--dim);font-family:'IBM Plex Mono',monospace;letter-spacing:.04em; }
+  .controls .row{display:flex;gap:10px;}
+  .controls .row > div{flex:1;}
+  .controls input[type=number], .controls select{
     width:100%;background:var(--panel);border:1px solid var(--border);color:var(--text);
     border-radius:8px;padding:12px;font-size:16px;font-family:'Inter';
   }
-  .controls input[type=text]:focus{outline:2px solid var(--gold);outline-offset:1px;}
+  .controls input[type=number]:focus, .controls select:focus{outline:2px solid var(--gold);outline-offset:1px;}
 
   .btn-primary{
     width:100%;background:var(--gold);color:#161116;border:none;
@@ -263,6 +178,23 @@
   .status.err{border-color:var(--rust);color:var(--rust);}
   .status.pending{border-color:var(--gold-dim);color:var(--gold);}
 
+  .result{display:none;width:100%;flex-direction:column;gap:10px;}
+  .result.show{display:flex;}
+  .size-result{
+    padding:14px;border-radius:10px;border:1px solid var(--success);color:var(--success);
+    font-weight:600;font-size:14px;text-align:center;
+  }
+  .size-result.low{border-color:var(--gold-dim);color:var(--gold);}
+  .style-heading{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;
+    color:var(--dim);text-transform:uppercase;margin-top:6px;
+  }
+  .style-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .style-item{border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--panel);}
+  .style-item img{width:100%;height:100px;object-fit:cover;display:block;}
+  .style-item p{font-size:12px;margin:6px;}
+  .style-item .price{color:var(--gold);font-family:'IBM Plex Mono',monospace;}
+
   .footnote{font-size:11px;color:var(--dim);text-align:center;max-width:420px;}
 </style>
 </head>
@@ -271,7 +203,7 @@
 <header>
   <div class="brand">
     <img src="logo.png" alt="Empire Growth" class="logo">
-    <div class="wordmark">the empire <span>fitting room</span></div>
+    <div class="wordmark">the empire <span>personal shopper</span></div>
   </div>
   <div class="tag">Live AI Demo</div>
 </header>
@@ -288,32 +220,28 @@
         <input id="new-look-price" type="text" placeholder="Price">
         <input id="new-look-url" type="text" placeholder="Image URL">
       </div>
-      <select id="new-look-category" style="width:100%; background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:10px; font-size:14px; font-family:'Inter'; margin-bottom:8px;">
+      <select id="new-look-category">
         <option value="apparel">Apparel (clothing)</option>
-        <option value="jewelry_necklace">Jewelry — Necklace</option>
-        <option value="jewelry_bracelet">Jewelry — Bracelet</option>
-        <option value="jewelry_ring">Jewelry — Ring</option>
-        <option value="jewelry_earrings">Jewelry — Earrings (experimental)</option>
+        <option value="footwear">Footwear</option>
+        <option value="accessories">Accessories</option>
       </select>
-      <button type="button" class="btn-mini" id="new-look-upload-btn">Upload image instead</button>
-      <input id="new-look-file" type="file" accept="image/png,image/jpeg,image/webp" style="display:none;">
-      <div class="add-look-filename" id="new-look-filename"></div>
+      <textarea id="new-look-size-chart" rows="2" placeholder="Size chart (optional): S:45-55, M:55-65, L:65-80"></textarea>
+      <div class="hint">Format: label:min–max weight in kg, comma-separated. Leave blank if this product has no sizes.</div>
       <button class="btn-mini" id="add-look-btn">Add to lookbook</button>
     </div>
   </aside>
 
-  <!-- ===== Fitting room ===== -->
+  <!-- ===== Personal shopper panel ===== -->
   <section class="room">
     <div class="room-header">
-      <h1>See it on you, before you buy it.</h1>
-      <p>Pick a look, add a photo, and the fitting room does the rest.</p>
+      <h1>Find your fit, and what goes with it.</h1>
+      <p>Pick a look, tell us your height and weight, and we'll do the rest — no photo needed.</p>
     </div>
 
     <div class="mirror-wrap">
-      <div class="mirror-tag">AI Fitting Room · Live</div>
+      <div class="mirror-tag">AI Personal Shopper · Live</div>
       <div class="mirror">
         <div class="mirror-frame" id="mirror-frame">
-          <div class="scan-line"></div>
           <img id="result-img" src="" alt="Selected look">
         </div>
       </div>
@@ -324,35 +252,44 @@
     </div>
 
     <div class="controls">
-      <p class="photo-tip">💡 Tip: your photo's framing sets the limit — upload a full-body photo for dresses, swimwear, or full outfits, since the AI can't add body parts that aren't in your original photo.</p>
-      <div class="upload-tabs">
-        <button class="upload-tab active" data-tab="file">Upload photo</button>
-        <button class="upload-tab" data-tab="url">Paste URL</button>
+      <div class="row">
+        <div>
+          <label>HEIGHT (CM)</label>
+          <input id="height-input" type="number" min="0" placeholder="170">
+        </div>
+        <div>
+          <label>WEIGHT (KG)</label>
+          <input id="weight-input" type="number" min="0" placeholder="65">
+        </div>
+      </div>
+      <div>
+        <label>FIT PREFERENCE</label>
+        <select id="fit-input">
+          <option value="tight">Tight</option>
+          <option value="regular" selected>Regular</option>
+          <option value="loose">Loose</option>
+        </select>
       </div>
 
-      <div class="upload-pane active" id="pane-file">
-        <label class="dropzone" id="dropzone">
-          <div>📷 Drop a photo here, or click to choose</div>
-          <input id="user-photo-file" type="file" accept="image/png,image/jpeg,image/webp">
-          <img class="preview-thumb" id="user-photo-preview" alt="">
-        </label>
-      </div>
-
-      <div class="upload-pane" id="pane-url">
-        <input id="user-photo-url" type="text" placeholder="https://example.com/your-photo.jpg">
-      </div>
-
-      <button class="btn-primary" id="tryon-btn">Try it on</button>
+      <button class="btn-primary" id="recommend-btn">Get my recommendation</button>
       <div class="status" id="status"></div>
+
+      <div class="result" id="result">
+        <div class="size-result" id="size-result"></div>
+        <div id="style-section" style="display:none;">
+          <div class="style-heading">Complete the look</div>
+          <div class="style-grid" id="style-grid"></div>
+        </div>
+      </div>
     </div>
 
-    <p class="footnote">Photos are processed for this demo only and used to generate a preview image.</p>
+    <p class="footnote">No photos are collected — recommendations are based only on height, weight, and fit preference.</p>
   </section>
 </main>
 
 <script>
 /* ============ CONFIG — edit before deploying ============ */
-const BACKEND_API_BASE = "https://ai-tryon-backend-production-408b.up.railway.app"; // your Railway backend URL
+const BACKEND_API_BASE = "https://ai-personal-shopper-backend-production.up.railway.app"; // your Railway backend URL
 const MERCHANT_KEY = "mch_live_test_789"; // your merchant API key
 const ADD_CODE = "empire2026"; // change this — required to add a product to the lookbook
 const REMOVE_CODE = "empireremove2026"; // change this — required to remove a product, different from ADD_CODE
@@ -362,9 +299,25 @@ const REMOVE_CODE = "empireremove2026"; // change this — required to remove a 
 // a merchant has an empty lookbook. After that, everything is loaded from
 // and saved to the backend, so it's permanent and shared across visitors.
 const STARTER_LOOKS = [
-  { name: "Premium Streetwear Hoodie", price: "$79.00", image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=600" },
-  { name: "Tailored Wool Coat", price: "$228.00", image: "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=600" },
-  { name: "Silk Slip Dress", price: "$142.00", image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600" },
+  { name: "Premium Streetwear Hoodie", price: "$79.00", image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=600", category: "apparel",
+    size_chart: [
+      { size_label: "S", weight_min_kg: 45, weight_max_kg: 58 },
+      { size_label: "M", weight_min_kg: 58, weight_max_kg: 72 },
+      { size_label: "L", weight_min_kg: 72, weight_max_kg: 88 },
+      { size_label: "XL", weight_min_kg: 88, weight_max_kg: 105 }
+    ]},
+  { name: "Tailored Wool Coat", price: "$228.00", image: "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=600", category: "apparel",
+    size_chart: [
+      { size_label: "S", weight_min_kg: 50, weight_max_kg: 62 },
+      { size_label: "M", weight_min_kg: 62, weight_max_kg: 76 },
+      { size_label: "L", weight_min_kg: 76, weight_max_kg: 92 }
+    ]},
+  { name: "Silk Slip Dress", price: "$142.00", image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600", category: "apparel",
+    size_chart: [
+      { size_label: "XS", weight_min_kg: 42, weight_max_kg: 50 },
+      { size_label: "S", weight_min_kg: 50, weight_max_kg: 58 },
+      { size_label: "M", weight_min_kg: 58, weight_max_kg: 68 }
+    ]},
 ];
 
 let looks = [];
@@ -372,33 +325,39 @@ let activeLookIndex = 0;
 
 const catalogEl = document.getElementById('catalog');
 const resultImg = document.getElementById('result-img');
-const mirrorFrame = document.getElementById('mirror-frame');
 const activeNameEl = document.getElementById('active-name');
 const activePriceEl = document.getElementById('active-price');
 const statusEl = document.getElementById('status');
-const tryonBtn = document.getElementById('tryon-btn');
+const recommendBtn = document.getElementById('recommend-btn');
+const resultEl = document.getElementById('result');
+const sizeResultEl = document.getElementById('size-result');
+const styleSectionEl = document.getElementById('style-section');
+const styleGridEl = document.getElementById('style-grid');
 
 async function fetchLooks() {
-  const res = await fetch(`${BACKEND_API_BASE}/api/v1/tryon/looks`, {
+  const res = await fetch(`${BACKEND_API_BASE}/api/v1/products`, {
     headers: { 'X-Merchant-API-Key': MERCHANT_KEY }
   });
   if (!res.ok) throw new Error('Could not load the lookbook.');
   const data = await res.json();
-  return data.looks;
+  return data.products;
 }
 
 async function createLookOnBackend(look) {
-  const res = await fetch(`${BACKEND_API_BASE}/api/v1/tryon/looks`, {
+  const res = await fetch(`${BACKEND_API_BASE}/api/v1/products`, {
     method: 'POST',
     headers: { 'X-Merchant-API-Key': MERCHANT_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify(look)
+    body: JSON.stringify({
+      name: look.name, price: look.price || '', image: look.image,
+      category: look.category || 'apparel', size_chart: look.size_chart || []
+    })
   });
   if (!res.ok) throw new Error('Could not save the product.');
   return await res.json();
 }
 
 async function deleteLookOnBackend(id) {
-  const res = await fetch(`${BACKEND_API_BASE}/api/v1/tryon/looks/${id}`, {
+  const res = await fetch(`${BACKEND_API_BASE}/api/v1/products/${id}`, {
     method: 'DELETE',
     headers: { 'X-Merchant-API-Key': MERCHANT_KEY }
   });
@@ -406,7 +365,6 @@ async function deleteLookOnBackend(id) {
 }
 
 function renderCatalog() {
-  // Clear existing look-card elements (keep the add-look form, which is last child)
   [...catalogEl.querySelectorAll('.look-card')].forEach(el => el.remove());
   const addForm = catalogEl.querySelector('.add-look');
 
@@ -423,19 +381,15 @@ function renderCatalog() {
         <div class="look-price">${look.price}</div>
       </div>`;
     card.onclick = () => selectLook(i);
-    card.querySelector('.look-remove').onclick = (e) => {
-      e.stopPropagation();
-      removeLook(i);
-    };
+    card.querySelector('.look-remove').onclick = (e) => { e.stopPropagation(); removeLook(i); };
     catalogEl.insertBefore(card, addForm);
   });
 }
 
 async function removeLook(i) {
   if (looks.length <= 1) { alert('Keep at least one look in the lookbook.'); return; }
-
   const code = prompt('Enter the code to remove this product:');
-  if (code === null) return; // cancelled
+  if (code === null) return;
   if (code !== REMOVE_CODE) { alert('Incorrect code.'); return; }
 
   const look = looks[i];
@@ -458,6 +412,7 @@ function selectLook(i) {
   activeNameEl.textContent = look.name;
   activePriceEl.textContent = look.price;
   resetStatus();
+  resultEl.classList.remove('show');
   renderCatalog();
 }
 
@@ -465,43 +420,41 @@ function resetStatus() {
   statusEl.className = 'status';
   statusEl.textContent = '';
 }
-
 function setStatus(text, kind) {
   statusEl.className = 'status show' + (kind ? ' ' + kind : '');
   statusEl.textContent = text;
 }
 
-/* ---------- Add-product form (supports URL or upload, same as person photo) ---------- */
-document.getElementById('new-look-upload-btn').onclick = () => {
-  document.getElementById('new-look-file').click();
-};
-document.getElementById('new-look-file').addEventListener('change', () => {
-  const file = document.getElementById('new-look-file').files[0];
-  document.getElementById('new-look-filename').textContent = file ? `Selected: ${file.name}` : '';
-  if (file) document.getElementById('new-look-url').value = ''; // file takes priority over URL
-});
+/* ---------- Parse the simple "label:min-max, label:min-max" size chart field ---------- */
+function parseSizeChart(text) {
+  if (!text.trim()) return [];
+  return text.split(',').map(part => {
+    const [label, range] = part.split(':').map(s => s.trim());
+    if (!label || !range) return null;
+    const [min, max] = range.split('-').map(n => parseFloat(n.trim()));
+    if (isNaN(min) || isNaN(max)) return null;
+    return { size_label: label, weight_min_kg: min, weight_max_kg: max };
+  }).filter(Boolean);
+}
 
+/* ---------- Add-product form ---------- */
 document.getElementById('add-look-btn').onclick = async () => {
   const code = prompt('Enter the code to add a product:');
-  if (code === null) return; // cancelled
+  if (code === null) return;
   if (code !== ADD_CODE) { alert('Incorrect code.'); return; }
 
   const name = document.getElementById('new-look-name').value.trim();
   const price = document.getElementById('new-look-price').value.trim();
-  const urlInput = document.getElementById('new-look-url').value.trim();
-  const fileInput = document.getElementById('new-look-file');
+  const imageUrl = document.getElementById('new-look-url').value.trim();
   const category = document.getElementById('new-look-category').value;
+  const sizeChartText = document.getElementById('new-look-size-chart').value;
 
   if (!name) { alert('Give the product a name first.'); return; }
+  if (!imageUrl) { alert('Paste an image URL for the product.'); return; }
 
-  let imageUrl = urlInput;
   try {
-    if (!imageUrl && fileInput.files[0]) {
-      imageUrl = await uploadImage(fileInput.files[0]);
-    }
-    if (!imageUrl) { alert('Paste an image URL or upload a photo of the product.'); return; }
-
-    const saved = await createLookOnBackend({ name, price: price || '', image: imageUrl, category });
+    const size_chart = parseSizeChart(sizeChartText);
+    const saved = await createLookOnBackend({ name, price: price || '', image: imageUrl, category, size_chart });
     looks.push(saved);
     selectLook(looks.length - 1);
 
@@ -509,147 +462,76 @@ document.getElementById('add-look-btn').onclick = async () => {
     document.getElementById('new-look-price').value = '';
     document.getElementById('new-look-url').value = '';
     document.getElementById('new-look-category').value = 'apparel';
-    fileInput.value = '';
-    document.getElementById('new-look-filename').textContent = '';
+    document.getElementById('new-look-size-chart').value = '';
   } catch (e) {
     alert('Could not add that product: ' + e.message);
   }
 };
 
-/* ---------- Shared image upload (used for both product photos and user photos) ---------- */
-async function uploadImage(file) {
-  const formData = new FormData();
-  formData.append('file', file);
-  const res = await fetch(`${BACKEND_API_BASE}/api/v1/tryon/upload-photo`, {
-    method: 'POST',
-    headers: { 'X-Merchant-API-Key': MERCHANT_KEY },
-    body: formData
-  });
-  if (!res.ok) throw new Error('Upload failed');
-  const data = await res.json();
-  return data.imageUrl;
-}
-
-/* ---------- Upload tabs (file vs URL) for the person photo ---------- */
-document.querySelectorAll('.upload-tab').forEach(tab => {
-  tab.onclick = () => {
-    document.querySelectorAll('.upload-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.upload-pane').forEach(p => p.classList.remove('active'));
-    tab.classList.add('active');
-    document.getElementById('pane-' + tab.dataset.tab).classList.add('active');
-  };
-});
-
-/* ---------- Person photo dropzone ---------- */
-const dropzone = document.getElementById('dropzone');
-const userPhotoFile = document.getElementById('user-photo-file');
-const userPhotoPreview = document.getElementById('user-photo-preview');
-
-['dragover', 'dragenter'].forEach(evt =>
-  dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add('drag'); })
-);
-['dragleave', 'drop'].forEach(evt =>
-  dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.remove('drag'); })
-);
-dropzone.addEventListener('drop', e => {
-  if (e.dataTransfer.files[0]) {
-    userPhotoFile.files = e.dataTransfer.files;
-    userPhotoFile.dispatchEvent(new Event('change'));
-  }
-});
-userPhotoFile.addEventListener('change', () => {
-  const file = userPhotoFile.files[0];
-  if (file) {
-    userPhotoPreview.src = URL.createObjectURL(file);
-    userPhotoPreview.style.display = 'block';
-    document.getElementById('user-photo-url').value = '';
-  }
-});
-
-async function resolveUserPhotoUrl() {
-  const activeTab = document.querySelector('.upload-tab.active').dataset.tab;
-  if (activeTab === 'file') {
-    if (!userPhotoFile.files[0]) throw new Error('Choose a photo first.');
-    return await uploadImage(userPhotoFile.files[0]);
-  } else {
-    const url = document.getElementById('user-photo-url').value.trim();
-    if (!url) throw new Error('Paste a photo URL first.');
-    return url;
-  }
-}
-
-/* ---------- Try-on flow ---------- */
-tryonBtn.onclick = async () => {
+/* ---------- Get recommendation flow ---------- */
+recommendBtn.onclick = async () => {
   const look = looks[activeLookIndex];
-  tryonBtn.disabled = true;
+  const height_cm = parseFloat(document.getElementById('height-input').value);
+  const weight_kg = parseFloat(document.getElementById('weight-input').value);
+  const fit_preference = document.getElementById('fit-input').value;
+
+  resultEl.classList.remove('show');
   resetStatus();
-  setStatus('Uploading your photo…', 'pending');
+
+  if (!height_cm || !weight_kg) {
+    setStatus('Please enter both height and weight.', 'err');
+    return;
+  }
+
+  recommendBtn.disabled = true;
+  setStatus('Finding your size…', 'pending');
 
   try {
-    const userImageUrl = await resolveUserPhotoUrl();
-
-    setStatus('Opening a session…', 'pending');
-    const initRes = await fetch(`${BACKEND_API_BASE}/api/v1/tryon/init`, {
+    const res = await fetch(`${BACKEND_API_BASE}/api/v1/personal-shopper`, {
       method: 'POST',
       headers: { 'X-Merchant-API-Key': MERCHANT_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ garmentId: look.id, category: look.category || 'apparel' })
+      body: JSON.stringify({ product_id: look.id, height_cm, weight_kg, fit_preference })
     });
-    if (!initRes.ok) throw new Error('Could not start a session.');
-    const { sessionId } = await initRes.json();
+    if (!res.ok) throw new Error('Could not get a recommendation right now.');
+    const data = await res.json();
 
-    setStatus('Sending it to the fitting room…', 'pending');
-    const processRes = await fetch(`${BACKEND_API_BASE}/api/v1/tryon/process`, {
-      method: 'POST',
-      headers: { 'X-Merchant-API-Key': MERCHANT_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sessionId, garmentImageUrl: look.image, userImageUrl })
-    });
-    if (!processRes.ok) throw new Error('Could not queue the job.');
+    resetStatus();
 
-    mirrorFrame.classList.add('scanning');
-    setStatus('Generating your look…', 'pending');
-    pollStatus(sessionId);
+    if (data.recommended_size) {
+      sizeResultEl.className = 'size-result' + (data.size_confidence === 'low' ? ' low' : '');
+      sizeResultEl.textContent = data.size_confidence === 'low'
+        ? `Closest match: Size ${data.recommended_size} (approximate)`
+        : `Your perfect size: ${data.recommended_size}`;
+    } else {
+      sizeResultEl.className = 'size-result low';
+      sizeResultEl.textContent = "This store hasn't set up sizing for this item yet.";
+    }
 
+    if (data.style_matches && data.style_matches.length) {
+      styleGridEl.innerHTML = data.style_matches.map(m => `
+        <div class="style-item">
+          <img src="${m.image}" alt="${m.name}">
+          <p>${m.name}<br><span class="price">${m.price || ''}</span></p>
+        </div>
+      `).join('');
+      styleSectionEl.style.display = 'block';
+    } else {
+      styleSectionEl.style.display = 'none';
+    }
+
+    resultEl.classList.add('show');
   } catch (err) {
     setStatus(err.message, 'err');
-    tryonBtn.disabled = false;
+  } finally {
+    recommendBtn.disabled = false;
   }
 };
-
-function pollStatus(sessionId) {
-  const interval = setInterval(async () => {
-    try {
-      const res = await fetch(`${BACKEND_API_BASE}/api/v1/tryon/status/${sessionId}`, {
-        headers: { 'X-Merchant-API-Key': MERCHANT_KEY }
-      });
-      const data = await res.json();
-
-      if (data.status === 'completed') {
-        clearInterval(interval);
-        mirrorFrame.classList.remove('scanning');
-        resultImg.src = data.resultImageUrl;
-        setStatus('Done — here\'s the look.', 'ok');
-        tryonBtn.disabled = false;
-      } else if (data.status === 'failed') {
-        clearInterval(interval);
-        mirrorFrame.classList.remove('scanning');
-        setStatus('Failed: ' + (data.errorReason || 'unknown error'), 'err');
-        tryonBtn.disabled = false;
-      } else {
-        setStatus('Status: ' + data.status + '…', 'pending');
-      }
-    } catch (e) {
-      // transient network hiccup during polling — keep trying silently
-    }
-  }, 3000);
-}
 
 /* ---------- Init ---------- */
 async function initCatalog() {
   try {
     looks = await fetchLooks();
     if (looks.length === 0) {
-      // First time this merchant has used the demo — seed their permanent
-      // lookbook with the starter looks, once.
       for (const starter of STARTER_LOOKS) {
         const saved = await createLookOnBackend(starter);
         looks.push(saved);
