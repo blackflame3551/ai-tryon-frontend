@@ -59,7 +59,10 @@
       dontKnowWeight: "I don't know my weight", knowWeightLink: "Enter my weight instead",
       bodyTypeLabel: "Body type", bodyTypeSlim: "Slim", bodyTypeAverage: "Average",
       bodyTypeAthletic: "Athletic", bodyTypeCurvy: "Curvy / broad",
-      estimatedNote: " (estimated from body type)"
+      estimatedNote: " (based on an estimate)",
+      dontKnowHeight: "I don't know my height", knowHeightLink: "Enter my height instead",
+      heightRangeLabel: "Height range", heightShort: "Short (~155cm)",
+      heightAverage: "Average (~168cm)", heightAboveAvg: "Above average (~178cm)", heightTall: "Tall (~190cm)"
     },
     es: {
       trigger: "🧍 Encuentra tu talla y estilo", modalTitle: "Encuentra tu talla",
@@ -75,7 +78,10 @@
       dontKnowWeight: "No sé mi peso", knowWeightLink: "Ingresar mi peso",
       bodyTypeLabel: "Tipo de cuerpo", bodyTypeSlim: "Delgado", bodyTypeAverage: "Promedio",
       bodyTypeAthletic: "Atlético", bodyTypeCurvy: "Curvilíneo / ancho",
-      estimatedNote: " (estimado según tipo de cuerpo)"
+      estimatedNote: " (basado en una estimación)",
+      dontKnowHeight: "No sé mi altura", knowHeightLink: "Ingresar mi altura",
+      heightRangeLabel: "Rango de altura", heightShort: "Baja (~155cm)",
+      heightAverage: "Promedio (~168cm)", heightAboveAvg: "Sobre el promedio (~178cm)", heightTall: "Alta (~190cm)"
     },
     fr: {
       trigger: "🧍 Trouvez votre taille et style", modalTitle: "Trouvez votre taille",
@@ -91,7 +97,10 @@
       dontKnowWeight: "Je ne connais pas mon poids", knowWeightLink: "Saisir mon poids",
       bodyTypeLabel: "Type de corps", bodyTypeSlim: "Mince", bodyTypeAverage: "Moyen",
       bodyTypeAthletic: "Athlétique", bodyTypeCurvy: "Pulpeux / large",
-      estimatedNote: " (estimé selon le type de corps)"
+      estimatedNote: " (basé sur une estimation)",
+      dontKnowHeight: "Je ne connais pas ma taille", knowHeightLink: "Saisir ma taille",
+      heightRangeLabel: "Tranche de taille", heightShort: "Petite (~155cm)",
+      heightAverage: "Moyenne (~168cm)", heightAboveAvg: "Au-dessus de la moyenne (~178cm)", heightTall: "Grande (~190cm)"
     },
     de: {
       trigger: "🧍 Größe & Stil finden", modalTitle: "Finde deine Größe",
@@ -107,7 +116,10 @@
       dontKnowWeight: "Ich kenne mein Gewicht nicht", knowWeightLink: "Gewicht eingeben",
       bodyTypeLabel: "Körpertyp", bodyTypeSlim: "Schlank", bodyTypeAverage: "Durchschnittlich",
       bodyTypeAthletic: "Athletisch", bodyTypeCurvy: "Kurvig / breit",
-      estimatedNote: " (geschätzt anhand des Körpertyps)"
+      estimatedNote: " (basierend auf einer Schätzung)",
+      dontKnowHeight: "Ich kenne meine Größe nicht", knowHeightLink: "Größe eingeben",
+      heightRangeLabel: "Größenbereich", heightShort: "Klein (~155cm)",
+      heightAverage: "Durchschnittlich (~168cm)", heightAboveAvg: "Überdurchschnittlich (~178cm)", heightTall: "Groß (~190cm)"
     },
     pt: {
       trigger: "🧍 Encontre seu tamanho e estilo", modalTitle: "Encontre seu tamanho",
@@ -123,7 +135,10 @@
       dontKnowWeight: "Não sei meu peso", knowWeightLink: "Inserir meu peso",
       bodyTypeLabel: "Tipo de corpo", bodyTypeSlim: "Magro", bodyTypeAverage: "Médio",
       bodyTypeAthletic: "Atlético", bodyTypeCurvy: "Curvilíneo / largo",
-      estimatedNote: " (estimado pelo tipo de corpo)"
+      estimatedNote: " (baseado em uma estimativa)",
+      dontKnowHeight: "Não sei minha altura", knowHeightLink: "Inserir minha altura",
+      heightRangeLabel: "Faixa de altura", heightShort: "Baixa (~155cm)",
+      heightAverage: "Média (~168cm)", heightAboveAvg: "Acima da média (~178cm)", heightTall: "Alta (~190cm)"
     },
     it: {
       trigger: "🧍 Trova taglia e stile", modalTitle: "Trova la tua taglia",
@@ -139,7 +154,10 @@
       dontKnowWeight: "Non conosco il mio peso", knowWeightLink: "Inserisci il mio peso",
       bodyTypeLabel: "Tipo di corpo", bodyTypeSlim: "Snello", bodyTypeAverage: "Medio",
       bodyTypeAthletic: "Atletico", bodyTypeCurvy: "Formoso / largo",
-      estimatedNote: " (stimato dal tipo di corpo)"
+      estimatedNote: " (basato su una stima)",
+      dontKnowHeight: "Non conosco la mia altezza", knowHeightLink: "Inserisci la mia altezza",
+      heightRangeLabel: "Fascia di altezza", heightShort: "Bassa (~155cm)",
+      heightAverage: "Media (~168cm)", heightAboveAvg: "Sopra la media (~178cm)", heightTall: "Alta (~190cm)"
     },
     ro: {
       trigger: "🧍 Găsește-ți mărimea și stilul", modalTitle: "Găsește-ți mărimea",
@@ -155,7 +173,10 @@
       dontKnowWeight: "Nu-mi știu greutatea", knowWeightLink: "Introdu greutatea mea",
       bodyTypeLabel: "Tip de corp", bodyTypeSlim: "Slab", bodyTypeAverage: "Mediu",
       bodyTypeAthletic: "Atletic", bodyTypeCurvy: "Plinuț / lat",
-      estimatedNote: " (estimat după tipul de corp)"
+      estimatedNote: " (bazat pe o estimare)",
+      dontKnowHeight: "Nu-mi știu înălțimea", knowHeightLink: "Introdu înălțimea mea",
+      heightRangeLabel: "Interval de înălțime", heightShort: "Scundă (~155cm)",
+      heightAverage: "Medie (~168cm)", heightAboveAvg: "Peste medie (~178cm)", heightTall: "Înaltă (~190cm)"
     },
     nl: {
       trigger: "🧍 Vind je maat & stijl", modalTitle: "Vind je maat",
@@ -171,7 +192,10 @@
       dontKnowWeight: "Ik weet mijn gewicht niet", knowWeightLink: "Mijn gewicht invoeren",
       bodyTypeLabel: "Lichaamstype", bodyTypeSlim: "Slank", bodyTypeAverage: "Gemiddeld",
       bodyTypeAthletic: "Atletisch", bodyTypeCurvy: "Gevuld / breed",
-      estimatedNote: " (geschat op basis van lichaamstype)"
+      estimatedNote: " (gebaseerd op een schatting)",
+      dontKnowHeight: "Ik weet mijn lengte niet", knowHeightLink: "Mijn lengte invoeren",
+      heightRangeLabel: "Lengtebereik", heightShort: "Kort (~155cm)",
+      heightAverage: "Gemiddeld (~168cm)", heightAboveAvg: "Bovengemiddeld (~178cm)", heightTall: "Lang (~190cm)"
     }
   };
 
@@ -354,6 +378,17 @@
             <input type="number" class="height-ft-input" min="0" placeholder="ft">
             <input type="number" class="height-in-input" min="0" max="11" placeholder="in">
           </div>
+          <a href="#" class="height-mode-link" style="display:block;font-size:11px;color:${DIM};text-decoration:underline;margin-top:6px;">${t.dontKnowHeight}</a>
+
+          <div class="height-range-field" style="display:none;">
+            <label>${t.heightRangeLabel}</label>
+            <select class="height-range-input">
+              <option value="155">${t.heightShort}</option>
+              <option value="168" selected>${t.heightAverage}</option>
+              <option value="178">${t.heightAboveAvg}</option>
+              <option value="190">${t.heightTall}</option>
+            </select>
+          </div>
 
           <div class="field-row">
             <label style="margin:0;">${t.weightLabel}</label>
@@ -408,6 +443,10 @@
     const heightCmInput = wrap.querySelector(".height-cm-input");
     const heightFtInput = wrap.querySelector(".height-ft-input");
     const heightInInput = wrap.querySelector(".height-in-input");
+    const heightModeLink = wrap.querySelector(".height-mode-link");
+    const heightRangeField = wrap.querySelector(".height-range-field");
+    const heightRangeInput = wrap.querySelector(".height-range-input");
+    const heightUnitToggleElRef = wrap.querySelector(".height-unit-toggle");
     const weightKgInput = wrap.querySelector(".weight-kg-input");
     const weightLbInput = wrap.querySelector(".weight-lb-input");
     const weightModeLink = wrap.querySelector(".weight-mode-link");
@@ -448,6 +487,28 @@
         heightFtinField.classList.toggle("active", heightUnit === "ftin");
       };
     });
+
+    // ---- height mode: exact cm/ft-in vs. a rough height-range pick ----
+    let heightMode = "exact"; // "exact" | "range"
+    heightModeLink.onclick = (e) => {
+      e.preventDefault();
+      if (heightMode === "exact") {
+        heightMode = "range";
+        heightUnitToggleElRef.style.display = "none";
+        heightCmField.style.display = "none";
+        heightFtinField.classList.remove("active");
+        heightFtinField.style.display = "none";
+        heightRangeField.style.display = "block";
+        heightModeLink.textContent = t.knowHeightLink;
+      } else {
+        heightMode = "exact";
+        heightUnitToggleElRef.style.display = "";
+        heightCmField.style.display = "";
+        if (heightUnit === "ftin") heightFtinField.style.display = "";
+        heightRangeField.style.display = "none";
+        heightModeLink.textContent = t.dontKnowHeight;
+      }
+    };
     wrap.querySelectorAll(".weight-unit-toggle .unit-btn").forEach(btn => {
       btn.onclick = () => {
         wrap.querySelectorAll(".weight-unit-toggle .unit-btn").forEach(b => b.classList.remove("active"));
@@ -495,7 +556,9 @@
     submitBtn.onclick = async () => {
       let height_cm, weight_kg;
 
-      if (heightUnit === "cm") {
+      if (heightMode === "range") {
+        height_cm = parseFloat(heightRangeInput.value);
+      } else if (heightUnit === "cm") {
         height_cm = parseFloat(heightCmInput.value);
       } else {
         const ft = parseFloat(heightFtInput.value) || 0;
@@ -543,7 +606,7 @@
           sizeLineEl.textContent = (data.size_confidence === "low"
             ? t.sizePrefixLow + data.recommended_size + t.sizeLowSuffix
             : t.sizePrefixHigh + data.recommended_size)
-            + (weightMode === "bodytype" ? t.estimatedNote : "");
+            + ((weightMode === "bodytype" || heightMode === "range") ? t.estimatedNote : "");
         } else {
           sizeLineEl.className = "size-line low";
           sizeLineEl.textContent = t.noChart;

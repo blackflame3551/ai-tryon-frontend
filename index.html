@@ -278,6 +278,16 @@
           <input id="height-ft-input" type="number" min="0" placeholder="ft">
           <input id="height-in-input" type="number" min="0" max="11" placeholder="in">
         </div>
+        <a href="#" id="height-mode-link" style="display:block;font-size:11px;color:var(--dim);text-decoration:underline;margin-top:6px;">I don't know my height</a>
+        <div id="height-range-field" style="display:none;margin-top:8px;">
+          <label>HEIGHT RANGE</label>
+          <select id="height-range-input">
+            <option value="155">Short (~155cm)</option>
+            <option value="168" selected>Average (~168cm)</option>
+            <option value="178">Above average (~178cm)</option>
+            <option value="190">Tall (~190cm)</option>
+          </select>
+        </div>
       </div>
       <div>
         <div class="field-row">
@@ -388,6 +398,34 @@ document.querySelectorAll('.height-unit-toggle .unit-btn').forEach(btn => {
     document.getElementById('height-ftin-field').classList.toggle('active', heightUnit === 'ftin');
   };
 });
+
+/* ---------- Height mode: exact cm/ft-in vs. a rough height-range pick ---------- */
+let heightMode = 'exact'; // 'exact' | 'range'
+const heightModeLink = document.getElementById('height-mode-link');
+const heightUnitToggleEl = document.querySelector('.height-unit-toggle');
+const heightCmFieldEl = document.getElementById('height-cm-field');
+const heightFtinFieldEl = document.getElementById('height-ftin-field');
+const heightRangeFieldEl = document.getElementById('height-range-field');
+
+heightModeLink.onclick = (e) => {
+  e.preventDefault();
+  if (heightMode === 'exact') {
+    heightMode = 'range';
+    heightUnitToggleEl.style.display = 'none';
+    heightCmFieldEl.style.display = 'none';
+    heightFtinFieldEl.classList.remove('active');
+    heightFtinFieldEl.style.display = 'none';
+    heightRangeFieldEl.style.display = 'block';
+    heightModeLink.textContent = 'Enter my height instead';
+  } else {
+    heightMode = 'exact';
+    heightUnitToggleEl.style.display = '';
+    heightCmFieldEl.style.display = '';
+    if (heightUnit === 'ftin') heightFtinFieldEl.style.display = '';
+    heightRangeFieldEl.style.display = 'none';
+    heightModeLink.textContent = "I don't know my height";
+  }
+};
 document.querySelectorAll('.weight-unit-toggle .unit-btn').forEach(btn => {
   btn.onclick = () => {
     document.querySelectorAll('.weight-unit-toggle .unit-btn').forEach(b => b.classList.remove('active'));
@@ -568,7 +606,9 @@ recommendBtn.onclick = async () => {
   const look = looks[activeLookIndex];
 
   let height_cm, weight_kg;
-  if (heightUnit === 'cm') {
+  if (heightMode === 'range') {
+    height_cm = parseFloat(document.getElementById('height-range-input').value);
+  } else if (heightUnit === 'cm') {
     height_cm = parseFloat(document.getElementById('height-cm-input').value);
   } else {
     const ft = parseFloat(document.getElementById('height-ft-input').value) || 0;
@@ -615,7 +655,7 @@ recommendBtn.onclick = async () => {
       sizeResultEl.textContent = (data.size_confidence === 'low'
         ? `Closest match: Size ${data.recommended_size} (approximate)`
         : `Your perfect size: ${data.recommended_size}`)
-        + (weightMode === 'bodytype' ? ' (estimated from body type)' : '');
+        + ((weightMode === 'bodytype' || heightMode === 'range') ? ' (based on an estimate)' : '');
     } else {
       sizeResultEl.className = 'size-result low';
       sizeResultEl.textContent = "This store hasn't set up sizing for this item yet.";
