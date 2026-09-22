@@ -55,7 +55,11 @@
       sizePrefixHigh: "Your perfect size: ", sizePrefixLow: "Closest match: Size ",
       sizeLowSuffix: " (approximate)", noChart: "This store hasn't set up sizing for this item yet.",
       styleHeading: "Complete the look", errMissing: "Please enter both height and weight.",
-      errRequest: "Couldn't get a recommendation right now."
+      errRequest: "Couldn't get a recommendation right now.",
+      dontKnowWeight: "I don't know my weight", knowWeightLink: "Enter my weight instead",
+      bodyTypeLabel: "Body type", bodyTypeSlim: "Slim", bodyTypeAverage: "Average",
+      bodyTypeAthletic: "Athletic", bodyTypeCurvy: "Curvy / broad",
+      estimatedNote: " (estimated from body type)"
     },
     es: {
       trigger: "🧍 Encuentra tu talla y estilo", modalTitle: "Encuentra tu talla",
@@ -67,7 +71,11 @@
       sizePrefixHigh: "Tu talla perfecta: ", sizePrefixLow: "La más cercana: Talla ",
       sizeLowSuffix: " (aproximado)", noChart: "Esta tienda aún no configuró tallas para este artículo.",
       styleHeading: "Completa el look", errMissing: "Ingresa tu altura y peso.",
-      errRequest: "No se pudo obtener una recomendación ahora."
+      errRequest: "No se pudo obtener una recomendación ahora.",
+      dontKnowWeight: "No sé mi peso", knowWeightLink: "Ingresar mi peso",
+      bodyTypeLabel: "Tipo de cuerpo", bodyTypeSlim: "Delgado", bodyTypeAverage: "Promedio",
+      bodyTypeAthletic: "Atlético", bodyTypeCurvy: "Curvilíneo / ancho",
+      estimatedNote: " (estimado según tipo de cuerpo)"
     },
     fr: {
       trigger: "🧍 Trouvez votre taille et style", modalTitle: "Trouvez votre taille",
@@ -79,7 +87,11 @@
       sizePrefixHigh: "Votre taille parfaite : ", sizePrefixLow: "Le plus proche : Taille ",
       sizeLowSuffix: " (approximatif)", noChart: "Ce magasin n'a pas encore configuré les tailles pour cet article.",
       styleHeading: "Complétez la tenue", errMissing: "Veuillez indiquer votre taille et votre poids.",
-      errRequest: "Impossible d'obtenir une recommandation pour le moment."
+      errRequest: "Impossible d'obtenir une recommandation pour le moment.",
+      dontKnowWeight: "Je ne connais pas mon poids", knowWeightLink: "Saisir mon poids",
+      bodyTypeLabel: "Type de corps", bodyTypeSlim: "Mince", bodyTypeAverage: "Moyen",
+      bodyTypeAthletic: "Athlétique", bodyTypeCurvy: "Pulpeux / large",
+      estimatedNote: " (estimé selon le type de corps)"
     },
     de: {
       trigger: "🧍 Größe & Stil finden", modalTitle: "Finde deine Größe",
@@ -91,7 +103,11 @@
       sizePrefixHigh: "Deine perfekte Größe: ", sizePrefixLow: "Nächste Übereinstimmung: Größe ",
       sizeLowSuffix: " (ungefähr)", noChart: "Dieser Shop hat für diesen Artikel noch keine Größentabelle hinterlegt.",
       styleHeading: "Passend dazu", errMissing: "Bitte Größe und Gewicht angeben.",
-      errRequest: "Gerade keine Empfehlung möglich."
+      errRequest: "Gerade keine Empfehlung möglich.",
+      dontKnowWeight: "Ich kenne mein Gewicht nicht", knowWeightLink: "Gewicht eingeben",
+      bodyTypeLabel: "Körpertyp", bodyTypeSlim: "Schlank", bodyTypeAverage: "Durchschnittlich",
+      bodyTypeAthletic: "Athletisch", bodyTypeCurvy: "Kurvig / breit",
+      estimatedNote: " (geschätzt anhand des Körpertyps)"
     },
     pt: {
       trigger: "🧍 Encontre seu tamanho e estilo", modalTitle: "Encontre seu tamanho",
@@ -103,7 +119,11 @@
       sizePrefixHigh: "Seu tamanho perfeito: ", sizePrefixLow: "Mais próximo: Tamanho ",
       sizeLowSuffix: " (aproximado)", noChart: "Esta loja ainda não configurou tamanhos para este item.",
       styleHeading: "Complete o look", errMissing: "Informe altura e peso.",
-      errRequest: "Não foi possível obter uma recomendação agora."
+      errRequest: "Não foi possível obter uma recomendação agora.",
+      dontKnowWeight: "Não sei meu peso", knowWeightLink: "Inserir meu peso",
+      bodyTypeLabel: "Tipo de corpo", bodyTypeSlim: "Magro", bodyTypeAverage: "Médio",
+      bodyTypeAthletic: "Atlético", bodyTypeCurvy: "Curvilíneo / largo",
+      estimatedNote: " (estimado pelo tipo de corpo)"
     },
     it: {
       trigger: "🧍 Trova taglia e stile", modalTitle: "Trova la tua taglia",
@@ -115,7 +135,11 @@
       sizePrefixHigh: "La tua taglia perfetta: ", sizePrefixLow: "Più vicina: Taglia ",
       sizeLowSuffix: " (approssimativo)", noChart: "Questo negozio non ha ancora impostato le taglie per questo articolo.",
       styleHeading: "Completa il look", errMissing: "Inserisci altezza e peso.",
-      errRequest: "Impossibile ottenere un consiglio al momento."
+      errRequest: "Impossibile ottenere un consiglio al momento.",
+      dontKnowWeight: "Non conosco il mio peso", knowWeightLink: "Inserisci il mio peso",
+      bodyTypeLabel: "Tipo di corpo", bodyTypeSlim: "Snello", bodyTypeAverage: "Medio",
+      bodyTypeAthletic: "Atletico", bodyTypeCurvy: "Formoso / largo",
+      estimatedNote: " (stimato dal tipo di corpo)"
     },
     ro: {
       trigger: "🧍 Găsește-ți mărimea și stilul", modalTitle: "Găsește-ți mărimea",
@@ -127,7 +151,11 @@
       sizePrefixHigh: "Mărimea ta perfectă: ", sizePrefixLow: "Cea mai apropiată: Mărimea ",
       sizeLowSuffix: " (aproximativ)", noChart: "Acest magazin nu a configurat încă mărimile pentru acest articol.",
       styleHeading: "Completează ținuta", errMissing: "Introdu înălțimea și greutatea.",
-      errRequest: "Nu s-a putut obține o recomandare acum."
+      errRequest: "Nu s-a putut obține o recomandare acum.",
+      dontKnowWeight: "Nu-mi știu greutatea", knowWeightLink: "Introdu greutatea mea",
+      bodyTypeLabel: "Tip de corp", bodyTypeSlim: "Slab", bodyTypeAverage: "Mediu",
+      bodyTypeAthletic: "Atletic", bodyTypeCurvy: "Plinuț / lat",
+      estimatedNote: " (estimat după tipul de corp)"
     },
     nl: {
       trigger: "🧍 Vind je maat & stijl", modalTitle: "Vind je maat",
@@ -139,7 +167,11 @@
       sizePrefixHigh: "Jouw perfecte maat: ", sizePrefixLow: "Dichtstbijzijnde match: Maat ",
       sizeLowSuffix: " (bij benadering)", noChart: "Deze winkel heeft nog geen maattabel ingesteld voor dit item.",
       styleHeading: "Maak de look compleet", errMissing: "Vul lengte en gewicht in.",
-      errRequest: "Kan nu geen aanbeveling ophalen."
+      errRequest: "Kan nu geen aanbeveling ophalen.",
+      dontKnowWeight: "Ik weet mijn gewicht niet", knowWeightLink: "Mijn gewicht invoeren",
+      bodyTypeLabel: "Lichaamstype", bodyTypeSlim: "Slank", bodyTypeAverage: "Gemiddeld",
+      bodyTypeAthletic: "Atletisch", bodyTypeCurvy: "Gevuld / breed",
+      estimatedNote: " (geschat op basis van lichaamstype)"
     }
   };
 
@@ -336,6 +368,17 @@
           <div class="imperial-pair weight-lb-field">
             <input type="number" class="weight-lb-input" min="0" placeholder="lb">
           </div>
+          <a href="#" class="weight-mode-link" style="display:block;font-size:11px;color:${DIM};text-decoration:underline;margin-top:6px;">${t.dontKnowWeight}</a>
+
+          <div class="body-type-field" style="display:none;">
+            <label>${t.bodyTypeLabel}</label>
+            <select class="body-type-input">
+              <option value="slim">${t.bodyTypeSlim}</option>
+              <option value="average" selected>${t.bodyTypeAverage}</option>
+              <option value="athletic">${t.bodyTypeAthletic}</option>
+              <option value="curvy">${t.bodyTypeCurvy}</option>
+            </select>
+          </div>
 
           <label>${t.fitLabel}</label>
           <select class="fit-input">
@@ -367,6 +410,10 @@
     const heightInInput = wrap.querySelector(".height-in-input");
     const weightKgInput = wrap.querySelector(".weight-kg-input");
     const weightLbInput = wrap.querySelector(".weight-lb-input");
+    const weightModeLink = wrap.querySelector(".weight-mode-link");
+    const bodyTypeField = wrap.querySelector(".body-type-field");
+    const bodyTypeInput = wrap.querySelector(".body-type-input");
+    const weightUnitToggleEl = wrap.querySelector(".weight-unit-toggle");
     const fitInput = wrap.querySelector(".fit-input");
     const submitBtn = wrap.querySelector(".submit-btn");
     const statusEl = wrap.querySelector(".status");
@@ -411,6 +458,31 @@
       };
     });
 
+    // ---- weight mode: exact number vs. body-type estimate ----
+    // Body type + height alone can't give a real weight, so this uses a
+    // standard BMI-band midpoint per build as a rough stand-in — good
+    // enough to pick the right size band, not a real measurement.
+    let weightMode = "exact"; // "exact" | "bodytype"
+    weightModeLink.onclick = (e) => {
+      e.preventDefault();
+      if (weightMode === "exact") {
+        weightMode = "bodytype";
+        weightUnitToggleEl.style.display = "none";
+        weightKgField.style.display = "none";
+        weightLbField.classList.remove("active");
+        weightLbField.style.display = "none";
+        bodyTypeField.style.display = "block";
+        weightModeLink.textContent = t.knowWeightLink;
+      } else {
+        weightMode = "exact";
+        weightUnitToggleEl.style.display = "";
+        weightKgField.style.display = "";
+        if (weightUnit === "lb") weightLbField.style.display = "";
+        bodyTypeField.style.display = "none";
+        weightModeLink.textContent = t.dontKnowWeight;
+      }
+    };
+
     function setStatus(text, kind) {
       statusEl.className = "status show" + (kind ? " " + kind : "");
       statusEl.textContent = text;
@@ -431,7 +503,11 @@
         height_cm = (ft * 12 + inches) * 2.54;
       }
 
-      if (weightUnit === "kg") {
+      if (weightMode === "bodytype") {
+        const BMI_BY_BUILD = { slim: 19, average: 23, athletic: 24.5, curvy: 27 };
+        const heightM = height_cm / 100;
+        weight_kg = BMI_BY_BUILD[bodyTypeInput.value] * heightM * heightM;
+      } else if (weightUnit === "kg") {
         weight_kg = parseFloat(weightKgInput.value);
       } else {
         const lb = parseFloat(weightLbInput.value);
@@ -464,9 +540,10 @@
 
         if (data.recommended_size) {
           sizeLineEl.className = "size-line" + (data.size_confidence === "low" ? " low" : "");
-          sizeLineEl.textContent = data.size_confidence === "low"
+          sizeLineEl.textContent = (data.size_confidence === "low"
             ? t.sizePrefixLow + data.recommended_size + t.sizeLowSuffix
-            : t.sizePrefixHigh + data.recommended_size;
+            : t.sizePrefixHigh + data.recommended_size)
+            + (weightMode === "bodytype" ? t.estimatedNote : "");
         } else {
           sizeLineEl.className = "size-line low";
           sizeLineEl.textContent = t.noChart;

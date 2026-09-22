@@ -293,6 +293,16 @@
         <div class="imperial-pair" id="weight-lb-field">
           <input id="weight-lb-input" type="number" min="0" placeholder="lb">
         </div>
+        <a href="#" id="weight-mode-link" style="display:block;font-size:11px;color:var(--dim);text-decoration:underline;margin-top:6px;">I don't know my weight</a>
+        <div id="body-type-field" style="display:none;margin-top:8px;">
+          <label>BODY TYPE</label>
+          <select id="body-type-input">
+            <option value="slim">Slim</option>
+            <option value="average" selected>Average</option>
+            <option value="athletic">Athletic</option>
+            <option value="curvy">Curvy / broad</option>
+          </select>
+        </div>
       </div>
       <div>
         <label>FIT PREFERENCE</label>
@@ -387,6 +397,37 @@ document.querySelectorAll('.weight-unit-toggle .unit-btn').forEach(btn => {
     document.getElementById('weight-lb-field').classList.toggle('active', weightUnit === 'lb');
   };
 });
+
+/* ---------- Weight mode: exact number vs. body-type estimate ---------- */
+// Body type + height alone can't give a real weight, so this uses a
+// standard BMI-band midpoint per build as a rough stand-in — good enough
+// to pick the right size band, not a real measurement.
+let weightMode = 'exact'; // 'exact' | 'bodytype'
+const weightModeLink = document.getElementById('weight-mode-link');
+const weightUnitToggleEl = document.querySelector('.weight-unit-toggle');
+const weightKgFieldEl = document.getElementById('weight-kg-field');
+const weightLbFieldEl = document.getElementById('weight-lb-field');
+const bodyTypeFieldEl = document.getElementById('body-type-field');
+
+weightModeLink.onclick = (e) => {
+  e.preventDefault();
+  if (weightMode === 'exact') {
+    weightMode = 'bodytype';
+    weightUnitToggleEl.style.display = 'none';
+    weightKgFieldEl.style.display = 'none';
+    weightLbFieldEl.classList.remove('active');
+    weightLbFieldEl.style.display = 'none';
+    bodyTypeFieldEl.style.display = 'block';
+    weightModeLink.textContent = 'Enter my weight instead';
+  } else {
+    weightMode = 'exact';
+    weightUnitToggleEl.style.display = '';
+    weightKgFieldEl.style.display = '';
+    if (weightUnit === 'lb') weightLbFieldEl.style.display = '';
+    bodyTypeFieldEl.style.display = 'none';
+    weightModeLink.textContent = "I don't know my weight";
+  }
+};
 
 async function fetchLooks() {
   const res = await fetch(`${BACKEND_API_BASE}/api/v1/products`, {
@@ -534,7 +575,11 @@ recommendBtn.onclick = async () => {
     const inches = parseFloat(document.getElementById('height-in-input').value) || 0;
     height_cm = (ft * 12 + inches) * 2.54;
   }
-  if (weightUnit === 'kg') {
+  if (weightMode === 'bodytype') {
+    const BMI_BY_BUILD = { slim: 19, average: 23, athletic: 24.5, curvy: 27 };
+    const heightM = height_cm / 100;
+    weight_kg = BMI_BY_BUILD[document.getElementById('body-type-input').value] * heightM * heightM;
+  } else if (weightUnit === 'kg') {
     weight_kg = parseFloat(document.getElementById('weight-kg-input').value);
   } else {
     const lb = parseFloat(document.getElementById('weight-lb-input').value);
@@ -567,9 +612,10 @@ recommendBtn.onclick = async () => {
 
     if (data.recommended_size) {
       sizeResultEl.className = 'size-result' + (data.size_confidence === 'low' ? ' low' : '');
-      sizeResultEl.textContent = data.size_confidence === 'low'
+      sizeResultEl.textContent = (data.size_confidence === 'low'
         ? `Closest match: Size ${data.recommended_size} (approximate)`
-        : `Your perfect size: ${data.recommended_size}`;
+        : `Your perfect size: ${data.recommended_size}`)
+        + (weightMode === 'bodytype' ? ' (estimated from body type)' : '');
     } else {
       sizeResultEl.className = 'size-result low';
       sizeResultEl.textContent = "This store hasn't set up sizing for this item yet.";
